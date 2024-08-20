@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.service.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.CaseDocumentRepository;
+import ai.sapper.migration.DataMigration.Repository.mongo.CaseDocumentRepository;
 import ai.sapper.migration.DataMigration.common.Migration;
 import ai.sapper.migration.DataMigration.constants.CaseType;
 import ai.sapper.migration.DataMigration.model.mongo.CaseDocumentDO;

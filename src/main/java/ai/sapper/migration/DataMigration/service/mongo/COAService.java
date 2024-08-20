@@ -1,14 +1,11 @@
 package ai.sapper.migration.DataMigration.service.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.COARepository;
-import ai.sapper.migration.DataMigration.Repository.CaseRepository;
+import ai.sapper.migration.DataMigration.Repository.mongo.COARepository;
 import ai.sapper.migration.DataMigration.common.Migration;
 import ai.sapper.migration.DataMigration.model.mongo.COA;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Slf4j

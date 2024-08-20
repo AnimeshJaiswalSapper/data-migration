@@ -1,4 +1,4 @@
-package ai.sapper.migration.DataMigration.Repository;
+package ai.sapper.migration.DataMigration.Repository.mongo;
 
 import ai.sapper.migration.DataMigration.constants.Status;
 import ai.sapper.migration.DataMigration.model.mongo.COA;
