@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.service.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.CaseRepository;
+import ai.sapper.migration.DataMigration.Repository.mongo.CaseRepository;
 import ai.sapper.migration.DataMigration.common.Migration;
 import ai.sapper.migration.DataMigration.model.mongo.Case;
 import lombok.extern.slf4j.Slf4j;
