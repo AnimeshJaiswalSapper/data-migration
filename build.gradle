@@ -16,6 +16,15 @@ java {
 
 repositories {
 	mavenCentral()
+	if (true) {
+		maven {
+			url = uri("https://maven.pkg.github.com/Sapper-Software/unified-framework")
+			credentials {
+				username = "AnimeshJaiswalSapper"
+				password = "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"
+			}
+		}
+	}
 }
 
 dependencies {
@@ -24,6 +33,8 @@ dependencies {
 	implementation ('org.projectlombok:lombok:1.18.26')
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.16.0'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.0'
+	implementation("com.unifiedframework:unified-core:2.1.9")
+	implementation("com.unifiedframework:unified-model:2.1.9")
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

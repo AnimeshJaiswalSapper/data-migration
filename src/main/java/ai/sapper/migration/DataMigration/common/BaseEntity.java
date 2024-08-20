@@ -13,9 +13,6 @@ import java.util.Date;
 @Setter
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @Indexed(unique = true)
-    protected String id;
     @CreatedBy
     private String createdBy;
     @CreatedDate

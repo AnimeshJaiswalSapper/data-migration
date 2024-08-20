@@ -1,27 +1,26 @@
-package ai.sapper.migration.DataMigration;
+package ai.sapper.migration.DataMigration.service;
 
-import ai.sapper.migration.DataMigration.Repository.CaseRepository;
-import ai.sapper.migration.DataMigration.common.Migration;
-import ai.sapper.migration.DataMigration.model.Case;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
 @Slf4j
-public class DataMigration {
+public class DataMigrationService {
 
-    private static final Map<String, String> classPathMap = new HashMap<>();
+    private static final List<String> services = List.of("CaseService","CaseDocumentDOService");
 
-    static {
-        classPathMap.put("Case", "ai.sapper.migration.DataMigration.model.Case");
-    }
+    @Value("${class.path}")
+    private String serviceClassPath;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -29,10 +28,8 @@ public class DataMigration {
 
     @PostConstruct
     public void  start(){
-        for (Map.Entry<String, String> entry : classPathMap.entrySet()) {
-            String className = entry.getKey();
-            String classPath = entry.getValue();
-
+        for(String service : services){
+            String classPath = serviceClassPath + "." + service;
             try {
                     Object caseObj = applicationContext.getBean(Class.forName(classPath));
                     log.info("Inside PostConstruct method");

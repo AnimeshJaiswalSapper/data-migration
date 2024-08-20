@@ -5,11 +5,14 @@ import ai.sapper.migration.DataMigration.common.Migration;
 import ai.sapper.migration.DataMigration.constants.CaseStatus;
 import ai.sapper.migration.DataMigration.constants.CaseType;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +29,12 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Slf4j
+@ToString
 @Component
-public class Case extends BaseEntity implements Migration {
+public class Case extends BaseEntity {
+    @Id
+    @Indexed(unique = true)
+    protected String id;
     @DocumentReference
     private Entity entity;
     private String coaId;
@@ -48,42 +55,4 @@ public class Case extends BaseEntity implements Migration {
     private boolean autoApproval = false;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String parentCaseId;
-
-    @Autowired
-    CaseRepository caseRepository;
-
-    @Override
-    public void migrate() {
-        log.info("Inside migrate method");
-        List<Case> cases = caseRepository.findAllByCoaId("64ca2d7c7e16e9677cebfba6");
-        log.info("Got all cases : {}", cases);
-        log.info("size of cases got : {}", cases.size());
-        log.info("Printed all cases");
-    }
-
-    public void setCaseRepository(CaseRepository caseRepository) {
-        this.caseRepository = caseRepository;
-    }
-
-    @Override
-    public String toString() {
-        return "Case{" +
-                "entity=" + entity +
-                ", coaId='" + coaId + '\'' +
-                ", coaName='" + coaName + '\'' +
-                ", assignee='" + assignee + '\'' +
-                ", status=" + status +
-                ", type=" + type +
-                ", channel='" + channel + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", attributes=" + attributes +
-                ", metadata=" + metadata +
-                ", submitDate=" + submitDate +
-                ", rejectReason='" + rejectReason + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", pdfPath=" + pdfPath +
-                ", autoApproval=" + autoApproval +
-                ", parentCaseId='" + parentCaseId + '\'' +
-                '}';
-    }
 }
