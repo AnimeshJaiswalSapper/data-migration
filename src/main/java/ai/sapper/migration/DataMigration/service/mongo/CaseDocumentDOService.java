@@ -1,9 +1,9 @@
-package ai.sapper.migration.DataMigration.service;
+package ai.sapper.migration.DataMigration.service.mongo;
 
 import ai.sapper.migration.DataMigration.Repository.CaseDocumentRepository;
 import ai.sapper.migration.DataMigration.common.Migration;
 import ai.sapper.migration.DataMigration.constants.CaseType;
-import ai.sapper.migration.DataMigration.model.CaseDocumentDO;
+import ai.sapper.migration.DataMigration.model.mongo.CaseDocumentDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

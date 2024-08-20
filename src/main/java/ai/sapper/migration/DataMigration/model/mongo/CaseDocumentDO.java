@@ -1,24 +1,18 @@
-package ai.sapper.migration.DataMigration.model;
+package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.CaseDocumentRepository;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
-import ai.sapper.migration.DataMigration.common.Migration;
 import ai.sapper.migration.DataMigration.constants.CaseType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.unifiedframework.model.block.CaseDocument;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
-import com.unifiedframework.model.block.CaseDocument;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Getter
 @Setter

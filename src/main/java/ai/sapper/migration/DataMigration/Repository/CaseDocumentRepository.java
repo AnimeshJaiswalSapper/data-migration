@@ -1,7 +1,7 @@
 package ai.sapper.migration.DataMigration.Repository;
 
 import ai.sapper.migration.DataMigration.constants.CaseType;
-import ai.sapper.migration.DataMigration.model.CaseDocumentDO;
+import ai.sapper.migration.DataMigration.model.mongo.CaseDocumentDO;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;

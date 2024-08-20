@@ -1,4 +1,4 @@
-package ai.sapper.migration.DataMigration.model;
+package ai.sapper.migration.DataMigration.model.mongo;
 
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

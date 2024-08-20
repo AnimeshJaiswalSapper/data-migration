@@ -1,4 +1,4 @@
-package ai.sapper.migration.DataMigration.model;
+package ai.sapper.migration.DataMigration.model.mongo;
 
 
 public enum DocumentType {
