@@ -18,6 +18,8 @@ public interface COALabelRepository extends MongoRepository<COALabel, String> {
 
     public List<COALabel> findByCoaAndStatusOrderByCreatedDateAsc(COA coa, Status status);
 
+    public List<COALabel> findByName(String name);
+
     public Page<COALabel> findByCoaAndStatus(COA coa, Status status, Pageable pageable);
 
     public Page<COALabel> findByCoa(COA coa, Pageable pageable);

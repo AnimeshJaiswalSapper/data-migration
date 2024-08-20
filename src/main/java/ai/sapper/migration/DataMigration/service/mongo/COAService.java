@@ -1,7 +1,9 @@
 package ai.sapper.migration.DataMigration.service.mongo;
 
+import ai.sapper.migration.DataMigration.Repository.COARepository;
 import ai.sapper.migration.DataMigration.Repository.CaseRepository;
 import ai.sapper.migration.DataMigration.common.Migration;
+import ai.sapper.migration.DataMigration.model.mongo.COA;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,14 +14,13 @@ import java.util.List;
 @Slf4j
 public class COAService implements Migration{
     @Autowired
-    CaseRepository caseRepository;
+    COARepository coaRepository;
 
     @Override
     public void migrate() {
         log.info("Inside Migrate method");
-//        List<Case> caseData = caseRepository.findAllByCoaId("64ca2d7c7e16e9677cebfba6");
-//        log.info("Case Data got : {}",caseData);
-//        log.info("size of case data got : {}", caseData.size());
+        COA coa = coaRepository.findByName("MultiFamily_COA");
+        log.info("GOT COA : {}", coa);
         log.info("Outside Migrate method");
     }
 

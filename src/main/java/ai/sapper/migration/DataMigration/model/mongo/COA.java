@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Document("coa")
+@ToString
 public class COA extends BaseEntity {
 
     private String name;

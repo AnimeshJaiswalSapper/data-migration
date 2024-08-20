@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> services = List.of("CaseService","CaseDocumentDOService");
+    private static final List<String> services = List.of("CaseService","CaseDocumentDOService","COALabelService","COAService");
 
     @Value("${class.path}")
     private String serviceClassPath;
