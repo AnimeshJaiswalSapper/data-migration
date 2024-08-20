@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.2'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id "io.freefair.lombok" version "6.4.3"
 }
 
 group = 'ai.sapper.migration'
@@ -20,6 +21,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation ("org.springframework.boot:spring-boot-starter-data-mongodb:3.3.0")
+	implementation ('org.projectlombok:lombok:1.18.26')
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.16.0'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
