@@ -2,6 +2,7 @@ package ai.sapper.migration.DataMigration.common;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Getter
 @Setter
+@ToString
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @CreatedBy
