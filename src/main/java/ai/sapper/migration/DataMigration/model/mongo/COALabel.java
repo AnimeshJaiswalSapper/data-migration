@@ -42,12 +42,14 @@ public class COALabel extends BaseEntity {
     @Autowired
     ReadService readService;
 
-    public List<COALabel> read(Date lastProcessedDate) {
+    public List<COALabel> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(COALabel.class,
                 "cOALabel",
                 "createdDate",
                 true,
-                lastProcessedDate
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 

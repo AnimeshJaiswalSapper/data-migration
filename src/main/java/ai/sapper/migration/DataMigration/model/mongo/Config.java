@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,12 +32,14 @@ public class Config extends BaseEntity {
     @Autowired
     ReadService readService;
 
-    public List<Config> read(String lastProcessedId) {
+    public List<Config> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Config.class,
                 "config",
                 "id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 }

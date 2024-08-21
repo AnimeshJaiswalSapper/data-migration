@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -26,12 +27,14 @@ public class COA extends BaseEntity {
     @Autowired
     ReadService readService;
 
-    public List<COA> read(String lastProcessedId) {
+    public List<COA> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(COA.class,
                 "coa",
                 "createdDate",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 }

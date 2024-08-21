@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -23,15 +24,17 @@ public class BaseOutput {
     private String project;
     private List<File> files;
 
-
     @Autowired
     ReadService readService;
-    public List<BaseOutput> read(String lastProcessedId) {
+
+    public List<BaseOutput> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(BaseOutput.class,
                 "BaseOutput",
                 "id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 

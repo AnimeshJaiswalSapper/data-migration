@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -33,12 +34,14 @@ public class CaseDocumentDO extends BaseEntity{
     @JsonIgnore
     ReadService readService;
 
-    public List<CaseDocumentDO> read(String lastProcessedId) {
+    public List<CaseDocumentDO> read(Date lastProcessedDate,String lastProcessedId) {
         return  readService.findDocumentsSorted(CaseDocumentDO.class,
                 "case_document",
                 "createdDate",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class AuditSnapshotOriginal implements Serializable {
     private String createdBy;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @LastModifiedBy
     private String modifiedBy;
@@ -47,13 +48,14 @@ public class AuditSnapshotOriginal implements Serializable {
     @Autowired
     ReadService readService;
 
-    public List<AuditSnapshot> read(String lastProcessedId) {
+    public List<AuditSnapshot> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(AuditSnapshot.class,
                 "audit.snapshot.original",
                 "createdAt",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
-
 }

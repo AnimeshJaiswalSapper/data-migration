@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,21 +40,19 @@ public class AuditSnapshot implements Serializable {
     private String createdBy;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @Autowired
     ReadService readService;
 
-    public List<AuditSnapshot> read(String lastProcessedId) {
+    public List<AuditSnapshot> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(AuditSnapshot.class,
                 "audit.snapshot",
                 "createdAt",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
-    }
-
-    public void incrementVersion() {
-        version++;
     }
 }

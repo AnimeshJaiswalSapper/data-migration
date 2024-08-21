@@ -23,14 +23,20 @@ public class ReadService {
     @Value("${batch}")
     int batch;
 
-    public  <T,V> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField, boolean ascending,
-                                              V lastProcessedDate, String lastProcessedId,Boolean isDate) {
+    public <T> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField, boolean ascending,
+                                           Date lastProcessedDate, String lastProcessedId, Boolean isDate) {
         Query query = new Query();
         Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
         query.with(Sort.by(direction, sortByField));
 
-        if (lastProcessedDate != null) {
-            query.addCriteria(Criteria.where("createdDate").gt(lastProcessedDate));
+        String dateField = "createdDate";
+
+        if (isDate && lastProcessedDate != null) {
+            boolean createdDateExists = mongoTemplate.exists(new Query(Criteria.where("createdDate").exists(true)), modelClass, collectionName);
+            dateField = createdDateExists ? "createdDate" : "createdAt";
+            query.addCriteria(Criteria.where(dateField).gt(lastProcessedDate));
+        } else if (lastProcessedId != null) {
+            query.addCriteria(Criteria.where("id").gt(lastProcessedId));
         }
 
         if (batch > 0) {
@@ -40,10 +46,4 @@ public class ReadService {
         return mongoTemplate.find(query, modelClass, collectionName);
     }
 
-    public void updateLastProcessedDate(String collectionName, Date newLastProcessedDate) {
-        Query query = new Query(Criteria.where("collectionName").is(collectionName));
-        Update update = new Update().set("lastProcessedDate", newLastProcessedDate);
-
-        mongoTemplate.updateFirst(query, update, DataMigration.class);
-    }
 }

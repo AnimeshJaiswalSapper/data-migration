@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -28,12 +29,14 @@ public class CaseMerge extends BaseEntity {
     @Autowired
     ReadService readService;
 
-    public List<CaseMerge> read(String lastProcessedId) {
+    public List<CaseMerge> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(CaseMerge.class,
                 "caseMerge",
                 "createdDate",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 

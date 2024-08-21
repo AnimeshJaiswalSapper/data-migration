@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "audit.entity")
@@ -37,17 +38,19 @@ public class AuditEntity implements Serializable {
     private String createdBy;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @Autowired
     ReadService readService;
 
-    public List<AuditEntity> read(String lastProcessedId) {
+    public List<AuditEntity> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(AuditEntity.class,
                 "audit.entity",
                 "createdAt",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 
