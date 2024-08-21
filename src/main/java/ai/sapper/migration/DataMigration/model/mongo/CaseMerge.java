@@ -2,34 +2,36 @@ package ai.sapper.migration.DataMigration.model.mongo;
 
 import ai.sapper.migration.DataMigration.Repository.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
-import ai.sapper.migration.DataMigration.constants.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Document("coa")
 @ToString(callSuper = true)
 @Component
-public class COA extends BaseEntity {
+public class CaseMerge extends BaseEntity {
 
-    private String name;
-    private Status status;
+    private static final long serialVersionUID = 1L;
+
+    private String oldCaseId;
+    private String mergeCaseId;
 
     @Autowired
     ReadService readService;
 
-    public List<COA> read(String lastProcessedId) {
-        return  readService.findDocumentsSorted(COA.class,
-                "coa",
+    public List<CaseMerge> read(String lastProcessedId) {
+        return  readService.findDocumentsSorted(CaseMerge.class,
+                "caseMerge",
                 "createdDate",
                 true,
                 lastProcessedId
         );
     }
+
 }
