@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,13 +23,13 @@ public class ReadService {
     @Value("${batch}")
     int batch;
 
-    public  <T> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField, boolean ascending, String lastProcessedId) {
+    public  <T,V> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField, boolean ascending, V lastProcessedDate) {
         Query query = new Query();
         Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
         query.with(Sort.by(direction, sortByField));
 
-        if (lastProcessedId != null && !lastProcessedId.isEmpty()) {
-            query.addCriteria(Criteria.where(sortByField).gt(lastProcessedId));
+        if (lastProcessedDate != null) {
+            query.addCriteria(Criteria.where("createdDate").gt(lastProcessedDate));
         }
 
         if (batch > 0) {
@@ -38,9 +39,9 @@ public class ReadService {
         return mongoTemplate.find(query, modelClass, collectionName);
     }
 
-    public void updateLastProcessedId(String collectionName, String newLastProcessedId) {
+    public void updateLastProcessedDate(String collectionName, Date newLastProcessedDate) {
         Query query = new Query(Criteria.where("collectionName").is(collectionName));
-        Update update = new Update().set("lastProcessedId", newLastProcessedId);
+        Update update = new Update().set("lastProcessedDate", newLastProcessedDate);
 
         mongoTemplate.updateFirst(query, update, DataMigration.class);
     }
