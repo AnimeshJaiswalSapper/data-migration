@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;

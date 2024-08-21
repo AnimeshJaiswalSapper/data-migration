@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.io.Serial;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -38,12 +39,16 @@ public class ActiveLoans {
 
     @Autowired
     ReadService readService;
-    public List<ActiveLoans> read(String lastProcessedId) {
+
+
+    public List<ActiveLoans> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(ActiveLoans.class,
                 "active_loans",
                 "id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 }

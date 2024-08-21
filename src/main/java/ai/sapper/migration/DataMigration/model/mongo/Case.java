@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.CaseStatus;
 import ai.sapper.migration.DataMigration.constants.CaseType;
@@ -56,12 +56,14 @@ public class Case extends BaseEntity {
     @JsonIgnore
     ReadService readService;
 
-    public List<Case> read(Date lastProcessedDate) {
+    public List<Case> read(Date lastProcessedDate,String lastProcessedId) {
        return  readService.findDocumentsSorted(Case.class,
                 "case",
                 "createdDate",
                 true,
-               lastProcessedDate
+               lastProcessedDate,
+               lastProcessedId,
+               true
         );
     }
 

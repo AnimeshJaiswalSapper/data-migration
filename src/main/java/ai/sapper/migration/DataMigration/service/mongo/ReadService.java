@@ -1,4 +1,4 @@
-package ai.sapper.migration.DataMigration.Repository;
+package ai.sapper.migration.DataMigration.service.mongo;
 
 import ai.sapper.migration.DataMigration.model.mongo.CaseDocumentDO;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
@@ -23,7 +23,8 @@ public class ReadService {
     @Value("${batch}")
     int batch;
 
-    public  <T,V> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField, boolean ascending, V lastProcessedDate) {
+    public  <T,V> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField, boolean ascending,
+                                              V lastProcessedDate, String lastProcessedId,Boolean isDate) {
         Query query = new Query();
         Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
         query.with(Sort.by(direction, sortByField));

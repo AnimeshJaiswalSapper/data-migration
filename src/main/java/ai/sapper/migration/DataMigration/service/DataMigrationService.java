@@ -1,9 +1,8 @@
 package ai.sapper.migration.DataMigration.service;
 
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.model.mongo.COALabel;
-import ai.sapper.migration.DataMigration.model.mongo.Case;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +21,8 @@ import java.util.List;
 @Slf4j
 public class DataMigrationService {
 
-//        private static final List<String> models = List.of("Case","CaseDocumentDO","COALabel","COA","CaseMerge", "SapperRule","Status","AuditEntity","AuditSnapshot","AuditSnapshotOriginal","Config");
-    private static final List<String> models = List.of("COALabel");
+        private static final List<String> models = List.of("Case","CaseDocumentDO","COALabel","COA","CaseMerge", "SapperRule","Status","AuditEntity","AuditSnapshot","AuditSnapshotOriginal","Config");
+//    private static final List<String> models = List.of("COALabel");
 //    private static final List<String> models = List.of("ActiveLoans","BaseOutput","DatabaseSequence","DataMineReport","IngestionAudit","IngestionConfiguration","RuleRuntimeData","TemplateMapping");
 
 
@@ -48,25 +47,33 @@ public class DataMigrationService {
     public void  start(){
         for(String service : models){
             String classPath = serviceClassPath + "." + service;
+
             try {
-                    Object caseObj = applicationContext.getBean(Class.forName(classPath));
-                    log.info("Inside PostConstruct method");
+                log.info("---------STARTED DATA MIGRATION------");
+
+                    Object serviceObj = applicationContext.getBean(Class.forName(classPath));
+
                     DataMigration dataMigration = dataMigrationRepository.findByCollectionName(service);
+
                     Date lastProcessedDate = null;
+                    String lastProcessedId = null;
+
                     if(dataMigration == null){
                         System.out.println("Its null");
                     }else{
                         lastProcessedDate = dataMigration.getLastProcessedDate();
-                        System.out.println("Its not null");
+                        lastProcessedId = dataMigration.getLastProcessedId();
                         System.out.println(dataMigration.getCollectionName());
                         System.out.println(dataMigration.getLastProcessedId());
                         System.out.println(dataMigration.getFailedIds());
                     }
-                    Method read = caseObj.getClass().getMethod("read", Date.class);
-                    Method castList = caseObj.getClass().getMethod("castList", List.class);
-                    List<Object> caseList = (List<Object>) read.invoke(caseObj,lastProcessedDate);
+
+
+                    Method read = serviceObj.getClass().getMethod("read", Date.class,String.class);
+//                    Method castList = serviceObj.getClass().getMethod("castList", List.class);
+                    List<Object> caseList = (List<Object>) read.invoke(serviceObj,lastProcessedDate,lastProcessedId);
                     System.out.println("caseList size = "+ caseList.size());
-                    List<COALabel> caseListNew = (List<COALabel>) castList.invoke(caseObj,caseList);
+                    List<COALabel> caseListNew = (List<COALabel>) castList.invoke(serviceObj,caseList);
                     if(caseListNew.size() ==0){
                         System.out.println("NO DATA IN LIST");
                         return;
