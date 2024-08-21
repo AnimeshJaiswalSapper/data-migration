@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,6 +19,7 @@ public class DataMigration {
 
     private String collectionName;
     private String lastProcessedId;
+    private Date lastProcessedDate;
     private List<String> failedIds;
 
 }

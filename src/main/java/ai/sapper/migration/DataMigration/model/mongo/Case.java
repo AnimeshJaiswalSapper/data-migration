@@ -56,12 +56,12 @@ public class Case extends BaseEntity {
     @JsonIgnore
     ReadService readService;
 
-    public List<Case> read(String lastProcessedId) {
+    public List<Case> read(Date lastProcessedDate) {
        return  readService.findDocumentsSorted(Case.class,
                 "case",
                 "createdDate",
                 true,
-               lastProcessedId
+               lastProcessedDate
         );
     }
 
