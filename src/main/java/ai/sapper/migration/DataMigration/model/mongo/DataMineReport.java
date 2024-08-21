@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -45,12 +46,15 @@ public class DataMineReport implements Serializable {
 
     @Autowired
     ReadService readService;
-    public List<DataMineReport> read(String lastProcessedId) {
+
+    public List<DataMineReport> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(DataMineReport.class,
                 "data_mine_report",
                 "_id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 

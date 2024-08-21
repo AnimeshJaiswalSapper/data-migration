@@ -7,10 +7,12 @@ import ai.sapper.migration.DataMigration.constants.RuleType;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "rule")
@@ -18,6 +20,10 @@ import java.util.List;
 @Component
 @ToString(callSuper = true)
 public class SapperRule extends BaseEntity {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    protected String id;
 
     private String name;
 
@@ -49,12 +55,14 @@ public class SapperRule extends BaseEntity {
     @Autowired
     ReadService readService;
 
-    public List<SapperRule> read(String lastProcessedId) {
+    public List<SapperRule> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(SapperRule.class,
                 "rule",
                 "createdDate",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 }

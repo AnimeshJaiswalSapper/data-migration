@@ -5,6 +5,8 @@ import ai.sapper.migration.DataMigration.common.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,8 +18,9 @@ import java.util.List;
 @ToString(callSuper = true)
 @Component
 public class CaseMerge extends BaseEntity {
-
-    private static final long serialVersionUID = 1L;
+    @Id
+    @Indexed(unique = true)
+    protected String id;
 
     private String oldCaseId;
     private String mergeCaseId;

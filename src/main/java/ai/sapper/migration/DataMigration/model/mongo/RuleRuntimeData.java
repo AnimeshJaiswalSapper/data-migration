@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -55,13 +56,15 @@ public class RuleRuntimeData extends BaseEntity {
 
     @Autowired
     ReadService readService;
-    public List<RuleRuntimeData> read(String lastProcessedId) {
+
+    public List<RuleRuntimeData> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(RuleRuntimeData.class,
                 "rules.output.runtime",
                 "createdDate",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
-
 }

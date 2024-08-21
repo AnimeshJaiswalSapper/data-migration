@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "status")
@@ -24,12 +25,14 @@ public class Status {
     @Autowired
     ReadService readService;
 
-    public List<Status> read(String lastProcessedId) {
+    public List<Status> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Status.class,
                 "status",
                 "id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "database_sequences")
@@ -21,12 +22,15 @@ public class DatabaseSequence {
 
     @Autowired
     ReadService readService;
-    public List<DatabaseSequence> read(String lastProcessedId) {
+
+    public List<DatabaseSequence> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(DatabaseSequence.class,
                 "database_sequences",
-                "_id",
+                "id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 }

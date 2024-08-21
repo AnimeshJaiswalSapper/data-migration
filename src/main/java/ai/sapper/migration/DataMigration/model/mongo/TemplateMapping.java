@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -32,12 +33,17 @@ public class TemplateMapping implements Serializable {
 
     @Autowired
     ReadService readService;
-    public List<TemplateMapping> read(String lastProcessedId) {
+
+    public List<TemplateMapping> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(TemplateMapping.class,
                 "form_norm_template_mapping",
                 "_id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
+
+
 }

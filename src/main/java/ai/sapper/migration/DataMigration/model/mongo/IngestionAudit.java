@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +48,15 @@ public class IngestionAudit implements Serializable {
 
     @Autowired
     ReadService readService;
-    public List<IngestionAudit> read(String lastProcessedId) {
+
+    public List<IngestionAudit> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(IngestionAudit.class,
                 "ingestion.audit",
                 "_id",
                 true,
-                lastProcessedId
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 
