@@ -11,8 +11,4 @@ import org.springframework.data.mongodb.repository.Query;
 @Repository
 public interface DataMigrationRepository extends MongoRepository<DataMigration, String> {
     public DataMigration findByCollectionName(String collectionName);
-
-    @Query(value = "{ 'collectionName' : ?0 }")
-    @Update(value = "{ '$set': { 'lastProcessedId' : ?1, 'lastProcessedDate' : ?2 } }")
-    void updateLastProcessedDetails(String collectionName, String lastProcessedId, Date lastProcessedDate);
 }

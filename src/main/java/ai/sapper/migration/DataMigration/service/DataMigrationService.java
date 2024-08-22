@@ -62,7 +62,14 @@ public class DataMigrationService {
                 return;
             }
 
-            updateDataMigration(collection, documents, dataMigration);
+            Object lastDocument = documents.get(documents.size() - 1);
+            String processedId = extractField(lastDocument, "id");
+            Date processedDate = extractDateField(lastDocument);
+
+            if(dataMigration!=null)
+                updateDataMigration(processedId,processedDate,dataMigration);
+            else
+                saveDataMigration(collection,processedId,processedDate);
 
         } catch (Exception e) {
             log.error("Error processing model {}: {}", collection, e.getMessage(), e);
@@ -74,23 +81,21 @@ public class DataMigrationService {
         return (List<Object>) readMethod.invoke(serviceObj, lastProcessedDate, lastProcessedId);
     }
 
-    private void updateDataMigration(String collecion, List<Object> documents, DataMigration existingDataMigration) throws Exception {
-        Object lastDocument = documents.get(documents.size() - 1);
-        String processedId = extractField(lastDocument, "id");
-        Date processedDate = extractDateField(lastDocument);
+    private void updateDataMigration(String processedId, Date processedDate, DataMigration existingDataMigration) throws Exception {
+        existingDataMigration.setLastProcessedId(processedId);
+        existingDataMigration.setLastProcessedDate(processedDate);
+//        implemented after write
+//        existingDataMigration.setFailedIds(new ArrayList<>());
+        dataMigrationRepository.save(existingDataMigration);
+    }
 
-        if (existingDataMigration == null) {
-            existingDataMigration = new DataMigration();
-            existingDataMigration.setCollectionName(collecion);
-            existingDataMigration.setLastProcessedId(processedId);
-            existingDataMigration.setLastProcessedDate(processedDate);
-            //to be implemented after write operation
-            existingDataMigration.setFailedIds(new ArrayList<>());
-            dataMigrationRepository.save(existingDataMigration);
-        }else{
-            dataMigrationRepository.updateLastProcessedDetails(collecion,processedId,processedDate);
-        }
-
+    private void saveDataMigration(String collecion, String processedId,Date processedDate) throws Exception {
+        DataMigration dataMigration = new DataMigration();
+        dataMigration.setCollectionName(collecion);
+        dataMigration.setLastProcessedId(processedId);
+        dataMigration.setFailedIds(new ArrayList<>());
+        dataMigration.setLastProcessedDate(processedDate);
+        dataMigrationRepository.save(dataMigration);
     }
 
     private String extractField(Object obj, String fieldName) throws Exception {
@@ -112,15 +117,13 @@ public class DataMigrationService {
     private Optional<Field> findDateField(Object obj) {
         Class<?> clazz = obj.getClass();
 
-        // Search for 'createdDate' field in the class hierarchy
         Field field = findFieldInHierarchy(clazz, "createdDate");
         if (field == null) {
-            // If 'createdDate' is not found, search for 'createdAt'
             field = findFieldInHierarchy(clazz, "createdAt");
         }
 
         if (field != null) {
-            field.setAccessible(true); // Ensure the field is accessible
+            field.setAccessible(true);
             return Optional.of(field);
         } else {
             log.warn("Neither 'createdDate' nor 'createdAt' fields found in class hierarchy: {}", clazz.getName());
@@ -133,7 +136,7 @@ public class DataMigrationService {
             try {
                 return clazz.getDeclaredField(fieldName);
             } catch (NoSuchFieldException e) {
-                clazz = clazz.getSuperclass(); // Check superclass if field is not found
+                clazz = clazz.getSuperclass();
             }
         }
         return null;
