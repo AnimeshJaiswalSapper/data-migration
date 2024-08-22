@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -35,7 +37,7 @@ public class TemplateMapping implements Serializable {
     public List<TemplateMapping> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(TemplateMapping.class,
                 "form_norm_template_mapping",
-                "id",
+                ID,
                 lastProcessedDate,
                 lastProcessedId,
                 false

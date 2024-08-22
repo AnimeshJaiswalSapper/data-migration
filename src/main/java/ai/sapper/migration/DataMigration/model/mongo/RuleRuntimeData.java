@@ -1,15 +1,16 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.unifiedframework.model.block.CaseDocument;
-import lombok.*;
+import lombok.NonNull;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class RuleRuntimeData extends BaseEntity {
     public List<RuleRuntimeData> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(RuleRuntimeData.class,
                 "rules.output.runtime",
-                "createdDate",
+                CREATED_DATE,
                 lastProcessedDate,
                 lastProcessedId,
                 true

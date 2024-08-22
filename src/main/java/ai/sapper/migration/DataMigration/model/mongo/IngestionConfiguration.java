@@ -1,7 +1,7 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
-import lombok.*;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -10,10 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 
 
 @Document(collection = "ingestion.config")
@@ -64,7 +66,7 @@ public class IngestionConfiguration implements Serializable {
     public List<IngestionConfiguration> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(IngestionConfiguration.class,
                 "ingestion.config",
-                "createdAt",
+                CREATED_AT,
                 lastProcessedDate,
                 lastProcessedId,
                 true

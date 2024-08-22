@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 @Document("config")
 @Component
 @ToString(callSuper = true)
@@ -34,7 +36,7 @@ public class Config extends BaseEntity {
     public List<Config> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Config.class,
                 "config",
-                "lastModifiedDate",
+                LAST_MODIFIED_DATE,
                 lastProcessedDate,
                 lastProcessedId,
                 true

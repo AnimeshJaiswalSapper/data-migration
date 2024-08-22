@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
 @Document("coa")
@@ -29,7 +29,7 @@ public class COA extends BaseEntity {
     public List<COA> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(COA.class,
                 "coa",
-                "createdDate",
+                CREATED_DATE,
                 lastProcessedDate,
                 lastProcessedId,
                 true

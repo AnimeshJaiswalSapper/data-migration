@@ -13,6 +13,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
+
 
 
 @Document("data_mine_report")
@@ -49,7 +52,7 @@ public class DataMineReport implements Serializable {
     public List<DataMineReport> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(DataMineReport.class,
                 "data_mine_report",
-                "id",
+                ID,
                 lastProcessedDate,
                 lastProcessedId,
                 false

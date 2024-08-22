@@ -1,14 +1,11 @@
 package ai.sapper.migration.DataMigration.service.mongo;
 
-import ai.sapper.migration.DataMigration.model.mongo.CaseDocumentDO;
-import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -27,8 +24,6 @@ public class ReadService {
                                            Date lastProcessedDate, String lastProcessedId, Boolean isDate) {
         Query query = new Query();
         query.with(Sort.by(Sort.Direction.ASC, sortByField));
-
-        String dateField = "createdDate";
 
         if (isDate && lastProcessedDate != null) {
             query.addCriteria(Criteria.where(sortByField).gt(lastProcessedDate));

@@ -1,13 +1,13 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.CaseStatus;
 import ai.sapper.migration.DataMigration.constants.CaseType;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -19,7 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
 
@@ -59,7 +60,7 @@ public class Case extends BaseEntity {
     public List<Case> read(Date lastProcessedDate,String lastProcessedId) {
        return  readService.findDocumentsSorted(Case.class,
                 "case",
-                "createdDate",
+                CREATED_DATE,
                lastProcessedDate,
                lastProcessedId,
                true

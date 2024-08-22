@@ -17,16 +17,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 @Component
 @Slf4j
 public class DataMigrationService {
 
     private static final List<String> models = List.of(
-            "Case", "CaseDocumentDO", "COALabel", "COA", "CaseMerge",
-            "SapperRule", "Status", "AuditEntity", "AuditSnapshot",
-            "AuditSnapshotOriginal", "Config", "ActiveLoans","DatabaseSequence",
-            "DataMineReport","Entity","IngestionAudit","IngestionConfiguration",
-            "RuleRuntimeData","TemplateMapping");
+            CASE, CASE_DOCUMENT_DO, COA_LABEL, COA, CASE_MERGE,
+            SAPPER_RULE, STATUS, AUDIT_ENTITY, AUDIT_SNAPSHOT,
+            AUDIT_SNAPSHOT_ORIGINAL, CONFIG, ACTIVE_LOANS, DATABASE_SEQUENCE,
+            DATA_MINE_REPORT, ENTITY, INGESTION_AUDIT, INGESTION_CONFIGURATION,
+            RULE_RUNTIME_DATA, TEMPLATE_MAPPING);
 
     @Value("${class.path}")
     private String modelClassPaths;
@@ -60,8 +62,9 @@ public class DataMigrationService {
 
             log.info("Following document got for collection {}",collection);
             log.info("Documents are {}", documents);
+
             if (documents.isEmpty()) {
-                log.info("No Data found in Collection : {}", collection);
+                log.info("No Data found for Collection : {}", collection);
                 return;
             }
 
@@ -81,7 +84,7 @@ public class DataMigrationService {
     }
 
     private List<Object> fetchDocuments(Object serviceObj, Date lastProcessedDate, String lastProcessedId) throws Exception {
-        Method readMethod = serviceObj.getClass().getMethod("read", Date.class, String.class);
+        Method readMethod = serviceObj.getClass().getMethod(READ, Date.class, String.class);
         return (List<Object>) readMethod.invoke(serviceObj, lastProcessedDate, lastProcessedId);
     }
 
@@ -121,9 +124,9 @@ public class DataMigrationService {
     private Optional<Field> findDateField(Object obj) {
         Class<?> clazz = obj.getClass();
 
-        Field field = findFieldInHierarchy(clazz, "createdDate");
+        Field field = findFieldInHierarchy(clazz, CREATED_DATE);
         if (field == null) {
-            field = findFieldInHierarchy(clazz, "createdAt");
+            field = findFieldInHierarchy(clazz, CREATED_AT);
         }
 
         if (field != null) {

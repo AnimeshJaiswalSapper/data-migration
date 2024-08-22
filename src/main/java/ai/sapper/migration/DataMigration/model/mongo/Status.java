@@ -1,12 +1,13 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
-import lombok.Data;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Status {
     public List<Status> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Status.class,
                 "status",
-                "id",
+                ID,
                 lastProcessedDate,
                 lastProcessedId,
                 false

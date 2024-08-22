@@ -3,13 +3,13 @@ package ai.sapper.migration.DataMigration.model.mongo;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 
 import java.util.Date;
 import java.util.List;
@@ -32,7 +32,7 @@ public class Entity extends BaseEntity {
     public List<Entity> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Entity.class,
                 "entity",
-                "lastModifiedDate",
+                LAST_MODIFIED_DATE,
                 lastProcessedDate,
                 lastProcessedId,
                 true

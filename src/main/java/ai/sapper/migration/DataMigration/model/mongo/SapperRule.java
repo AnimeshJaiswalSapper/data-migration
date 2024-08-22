@@ -1,16 +1,17 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.Category;
 import ai.sapper.migration.DataMigration.constants.RuleType;
-import lombok.Data;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 
 import java.util.Date;
 import java.util.List;
@@ -57,7 +58,7 @@ public class SapperRule extends BaseEntity {
     public List<SapperRule> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(SapperRule.class,
                 "rule",
-                "lastModifiedDate",
+                LAST_MODIFIED_DATE,
                 lastProcessedDate,
                 lastProcessedId,
                 true

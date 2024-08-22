@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -32,7 +34,7 @@ public class CaseMerge extends BaseEntity {
     public List<CaseMerge> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(CaseMerge.class,
                 "caseMerge",
-                "createdDate",
+                CREATED_DATE,
                 lastProcessedDate,
                 lastProcessedId,
                 true

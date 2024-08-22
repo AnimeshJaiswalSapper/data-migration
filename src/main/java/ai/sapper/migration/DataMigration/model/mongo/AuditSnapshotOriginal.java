@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
 @Document(collection = "audit.snapshot.original")
@@ -51,7 +52,7 @@ public class AuditSnapshotOriginal implements Serializable {
     public List<AuditSnapshot> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(AuditSnapshot.class,
                 "audit.snapshot.original",
-                "createdAt",
+                CREATED_AT,
                 lastProcessedDate,
                 lastProcessedId,
                 true

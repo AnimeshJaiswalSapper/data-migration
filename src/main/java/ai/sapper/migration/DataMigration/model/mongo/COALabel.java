@@ -1,9 +1,9 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.Status;
-import lombok.*;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
 @Document
@@ -44,7 +44,7 @@ public class COALabel extends BaseEntity {
     public List<COALabel> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(COALabel.class,
                 "cOALabel",
-                "createdDate",
+                CREATED_DATE,
                 lastProcessedDate,
                 lastProcessedId,
                 true
