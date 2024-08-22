@@ -1,16 +1,17 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.CaseStatus;
 import ai.sapper.migration.DataMigration.constants.CaseType;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +19,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-@Data
-@Builder
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
+
+
+@Document
 @JsonIgnoreProperties(ignoreUnknown = true)
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @ToString(callSuper = true)
 @Component
 public class Case extends BaseEntity {
@@ -36,13 +37,13 @@ public class Case extends BaseEntity {
     private String coaId;
     private String coaName;
     private String assignee;
-    @Builder.Default
+
     private CaseStatus status = CaseStatus.DRAFT;
     private CaseType type;
     private String channel;
     private String fileName;
     private Map<String,?> attributes;
-    @Builder.Default
+
     private Map<String, ?> metadata = new HashMap<>();
     private Date submitDate;
     private String rejectReason;
@@ -56,19 +57,13 @@ public class Case extends BaseEntity {
     @JsonIgnore
     ReadService readService;
 
-    public List<Case> read(Date lastProcessedDate) {
+    public List<Case> read(Date lastProcessedDate,String lastProcessedId) {
        return  readService.findDocumentsSorted(Case.class,
                 "case",
-                "createdDate",
-                true,
-               lastProcessedDate
+                CREATED_DATE,
+               lastProcessedDate,
+               lastProcessedId,
+               true
         );
-    }
-
-    public List<Case> castList(List<Object> originalList) {
-        return originalList.stream()
-                .filter(Case.class::isInstance)
-                .map(Case.class::cast)
-                .collect(Collectors.toList());
     }
 }

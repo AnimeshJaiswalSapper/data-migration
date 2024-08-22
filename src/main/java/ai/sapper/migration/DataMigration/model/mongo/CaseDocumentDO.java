@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.CaseType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,10 +13,12 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
-@Data
-@NoArgsConstructor
+
+
 @Document("case_document")
 @CompoundIndexes({ @CompoundIndex(name = "caseId_type", def = "{'caseId':1, 'type':1}", unique = true)})
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -33,46 +35,13 @@ public class CaseDocumentDO extends BaseEntity{
     @JsonIgnore
     ReadService readService;
 
-    public List<CaseDocumentDO> read(String lastProcessedId) {
+    public List<CaseDocumentDO> read(Date lastProcessedDate,String lastProcessedId) {
         return  readService.findDocumentsSorted(CaseDocumentDO.class,
                 "case_document",
-                "createdDate",
-                true,
-                lastProcessedId
+                CREATED_DATE,
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
-    }
-
-    public CaseDocumentDO(String id , CaseDocument caseDocument, String caseId)
-    {
-        this.id = id;
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-    }
-
-    public CaseDocumentDO(CaseDocument caseDocument, String caseId , CaseType type)
-    {
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-        this.type = type;
-    }
-
-    public CaseDocumentDO(String id , CaseDocument caseDocument)
-    {
-        this.id = id;
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-    }
-
-    public CaseDocumentDO(CaseDocument caseDocument)
-    {
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-    }
-
-    public CaseDocumentDO(CaseDocument caseDocument, CaseType type)
-    {
-        this.type = type;
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
     }
 }

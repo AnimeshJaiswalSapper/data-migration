@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -11,17 +11,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.io.Serial;
+import java.util.Date;
 import java.util.List;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
-@Data
-@Builder
+
 @Document("active_loans")
 @CompoundIndexes({
         @CompoundIndex(name = "loan_collateral_database_idx", def = "{'loanNumber': 1, 'collateralId': 1, 'database': 1}")
 })
 @Component
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString
 public class ActiveLoans {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -38,12 +38,15 @@ public class ActiveLoans {
 
     @Autowired
     ReadService readService;
-    public List<ActiveLoans> read(String lastProcessedId) {
+
+
+    public List<ActiveLoans> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(ActiveLoans.class,
                 "active_loans",
-                "id",
-                true,
-                lastProcessedId
+                ID,
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 }

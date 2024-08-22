@@ -1,7 +1,7 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
-import lombok.*;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -10,22 +10,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
+
+
 @Document(collection = "ingestion.config")
 @Component
+@ToString
 public class IngestionConfiguration implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    private String ingestionConfigId;
+    private String id;
 
     private String sourceBucket;
 
@@ -46,10 +47,10 @@ public class IngestionConfiguration implements Serializable {
     private String createdBy;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private Date modifiedAt;
 
     private List<String> allowedExtensions;
 
@@ -61,12 +62,14 @@ public class IngestionConfiguration implements Serializable {
 
     @Autowired
     ReadService readService;
-    public List<IngestionConfiguration> read(String lastProcessedId) {
+
+    public List<IngestionConfiguration> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(IngestionConfiguration.class,
                 "ingestion.config",
-                "_id",
-                true,
-                lastProcessedId
+                CREATED_AT,
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 

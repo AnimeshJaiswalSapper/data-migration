@@ -1,23 +1,24 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+
 @Document("form_norm_template_mapping")
 @Component
+@ToString
 public class TemplateMapping implements Serializable {
 
 
@@ -32,12 +33,16 @@ public class TemplateMapping implements Serializable {
 
     @Autowired
     ReadService readService;
-    public List<TemplateMapping> read(String lastProcessedId) {
+
+    public List<TemplateMapping> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(TemplateMapping.class,
                 "form_norm_template_mapping",
-                "_id",
-                true,
-                lastProcessedId
+                ID,
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
+
+
 }

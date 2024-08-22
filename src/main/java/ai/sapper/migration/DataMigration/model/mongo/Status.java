@@ -1,19 +1,20 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
-import lombok.Data;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
+
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "status")
-@Data
 @Component
-@ToString(callSuper = true)
+@ToString
 public class Status {
     @Id
     private String id;
@@ -24,12 +25,13 @@ public class Status {
     @Autowired
     ReadService readService;
 
-    public List<Status> read(String lastProcessedId) {
+    public List<Status> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Status.class,
                 "status",
-                "id",
-                true,
-                lastProcessedId
+                ID,
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 }

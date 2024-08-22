@@ -1,24 +1,23 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
 import ai.sapper.migration.DataMigration.common.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.Status;
-import lombok.*;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
-@Data
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Document
 @ToString(callSuper = true)
 @Component
 public class COALabel extends BaseEntity {
@@ -34,7 +33,7 @@ public class COALabel extends BaseEntity {
     private List<Entity> expressionEntities;
     private Status status;
     private String conditionExp;
-    private Map<String, Condition> condition;
+    private Map<String, Object> condition;
     private String parentId;
     private boolean mandatory;
     private int priority;
@@ -42,20 +41,14 @@ public class COALabel extends BaseEntity {
     @Autowired
     ReadService readService;
 
-    public List<COALabel> read(Date lastProcessedDate) {
+    public List<COALabel> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(COALabel.class,
                 "cOALabel",
-                "createdDate",
-                true,
-                lastProcessedDate
+                CREATED_DATE,
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
-    }
-
-    public List<COALabel> castList(List<Object> originalList) {
-        return originalList.stream()
-                .filter(COALabel.class::isInstance)
-                .map(COALabel.class::cast)
-                .collect(Collectors.toList());
     }
 
 }

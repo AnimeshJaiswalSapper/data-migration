@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.Repository.ReadService;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -10,14 +10,17 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
-@Data
-@Builder
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
+
+
+
 @Document("data_mine_report")
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Component
+@ToString
 public class DataMineReport implements Serializable {
 
     @Serial
@@ -45,12 +48,14 @@ public class DataMineReport implements Serializable {
 
     @Autowired
     ReadService readService;
-    public List<DataMineReport> read(String lastProcessedId) {
+
+    public List<DataMineReport> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(DataMineReport.class,
                 "data_mine_report",
-                "_id",
-                true,
-                lastProcessedId
+                ID,
+                lastProcessedDate,
+                lastProcessedId,
+                false
         );
     }
 
