@@ -49,8 +49,7 @@ public class DataMineReport implements Serializable {
     public List<DataMineReport> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(DataMineReport.class,
                 "data_mine_report",
-                "_id",
-                true,
+                "id",
                 lastProcessedDate,
                 lastProcessedId,
                 false

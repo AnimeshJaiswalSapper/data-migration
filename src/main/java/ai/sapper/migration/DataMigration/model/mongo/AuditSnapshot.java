@@ -49,7 +49,6 @@ public class AuditSnapshot implements Serializable {
         return  readService.findDocumentsSorted(AuditSnapshot.class,
                 "audit.snapshot",
                 "createdAt",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true

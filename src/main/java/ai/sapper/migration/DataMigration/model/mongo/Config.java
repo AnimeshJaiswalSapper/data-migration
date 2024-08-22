@@ -35,10 +35,9 @@ public class Config extends BaseEntity {
         return  readService.findDocumentsSorted(Config.class,
                 "config",
                 "lastModifiedDate",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
-                false
+                true
         );
     }
 }

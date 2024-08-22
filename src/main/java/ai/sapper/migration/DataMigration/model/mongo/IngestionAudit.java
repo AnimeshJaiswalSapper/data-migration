@@ -24,7 +24,7 @@ public class IngestionAudit implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private String ingestionId;
+    private String id;
 
     private String sourcePath;
 
@@ -49,8 +49,7 @@ public class IngestionAudit implements Serializable {
     public List<IngestionAudit> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(IngestionAudit.class,
                 "ingestion.audit",
-                "_id",
-                true,
+                "id",
                 lastProcessedDate,
                 lastProcessedId,
                 false

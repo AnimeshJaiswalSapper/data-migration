@@ -8,20 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
 
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Document
+@JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(callSuper = true)
+@Component
 public class Entity extends BaseEntity {
     private static final long serialVersionUID = 1L;
     @Id
-    @Indexed(unique = true)
     protected String id;
+
     private String name;
 
     @Autowired
@@ -30,11 +32,10 @@ public class Entity extends BaseEntity {
     public List<Entity> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Entity.class,
                 "entity",
-                "_id",
-                true,
+                "lastModifiedDate",
                 lastProcessedDate,
                 lastProcessedId,
-                false
+                true
         );
     }
 }

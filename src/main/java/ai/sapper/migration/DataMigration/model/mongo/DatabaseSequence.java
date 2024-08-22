@@ -25,7 +25,6 @@ public class DatabaseSequence {
         return  readService.findDocumentsSorted(DatabaseSequence.class,
                 "database_sequences",
                 "id",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 false

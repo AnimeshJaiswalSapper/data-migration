@@ -11,6 +11,7 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 
 
+@Document
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(callSuper = true)
 @Component
@@ -58,7 +60,6 @@ public class Case extends BaseEntity {
        return  readService.findDocumentsSorted(Case.class,
                 "case",
                 "createdDate",
-                true,
                lastProcessedDate,
                lastProcessedId,
                true

@@ -35,8 +35,7 @@ public class TemplateMapping implements Serializable {
     public List<TemplateMapping> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(TemplateMapping.class,
                 "form_norm_template_mapping",
-                "_id",
-                true,
+                "id",
                 lastProcessedDate,
                 lastProcessedId,
                 false

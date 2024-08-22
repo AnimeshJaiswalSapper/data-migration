@@ -23,20 +23,17 @@ public class ReadService {
     @Value("${batch}")
     int batch;
 
-    public <T> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField, boolean ascending,
+    public <T> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField,
                                            Date lastProcessedDate, String lastProcessedId, Boolean isDate) {
         Query query = new Query();
-        Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
-        query.with(Sort.by(direction, sortByField));
+        query.with(Sort.by(Sort.Direction.ASC, sortByField));
 
         String dateField = "createdDate";
 
         if (isDate && lastProcessedDate != null) {
-            boolean createdDateExists = mongoTemplate.exists(new Query(Criteria.where("createdDate").exists(true)), modelClass, collectionName);
-            dateField = createdDateExists ? "createdDate" : "createdAt";
-            query.addCriteria(Criteria.where(dateField).gt(lastProcessedDate));
+            query.addCriteria(Criteria.where(sortByField).gt(lastProcessedDate));
         } else if (lastProcessedId != null) {
-            query.addCriteria(Criteria.where("id").gt(lastProcessedId));
+            query.addCriteria(Criteria.where(sortByField).gt(lastProcessedId));
         }
 
         if (batch > 0) {

@@ -46,7 +46,6 @@ public class AuditEntity implements Serializable {
         return  readService.findDocumentsSorted(AuditEntity.class,
                 "audit.entity",
                 "createdAt",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true

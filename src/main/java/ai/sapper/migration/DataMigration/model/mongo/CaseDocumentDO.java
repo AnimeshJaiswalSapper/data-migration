@@ -38,7 +38,6 @@ public class CaseDocumentDO extends BaseEntity{
         return  readService.findDocumentsSorted(CaseDocumentDO.class,
                 "case_document",
                 "createdDate",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true

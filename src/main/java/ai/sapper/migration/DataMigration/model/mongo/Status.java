@@ -28,7 +28,6 @@ public class Status {
         return  readService.findDocumentsSorted(Status.class,
                 "status",
                 "id",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 false

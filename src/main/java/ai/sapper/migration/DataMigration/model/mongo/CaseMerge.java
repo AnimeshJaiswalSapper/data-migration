@@ -7,12 +7,14 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 
 
+@Document
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(callSuper = true)
 @Component
@@ -31,7 +33,6 @@ public class CaseMerge extends BaseEntity {
         return  readService.findDocumentsSorted(CaseMerge.class,
                 "caseMerge",
                 "createdDate",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true

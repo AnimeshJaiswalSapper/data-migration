@@ -30,7 +30,6 @@ public class COA extends BaseEntity {
         return  readService.findDocumentsSorted(COA.class,
                 "coa",
                 "createdDate",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true

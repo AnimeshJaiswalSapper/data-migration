@@ -45,7 +45,6 @@ public class COALabel extends BaseEntity {
         return  readService.findDocumentsSorted(COALabel.class,
                 "cOALabel",
                 "createdDate",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true

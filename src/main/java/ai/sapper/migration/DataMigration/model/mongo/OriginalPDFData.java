@@ -1,6 +1,8 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -77,5 +79,18 @@ public class OriginalPDFData implements Serializable {
     @Transient
     private Map<String, Set<String>> projectWiseTemplateMap = new LinkedHashMap<String, Set<String>>();
     private byte[] projectWiseTemplatByte;
+
+    @Autowired
+    ReadService readService;
+
+    public List<OriginalPDFData> read(Date lastProcessedDate, String lastProcessedId) {
+        return  readService.findDocumentsSorted(OriginalPDFData.class,
+                "OriginalPDFData",
+                "_id",
+                lastProcessedDate,
+                lastProcessedId,
+                false
+        );
+    }
 }
 

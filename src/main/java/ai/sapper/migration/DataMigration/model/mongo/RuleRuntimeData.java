@@ -15,8 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 
-@ToString(callSuper = true)
+
 @Document(collection = "rules.output.runtime")
+@ToString(callSuper = true)
 @Component
 public class RuleRuntimeData extends BaseEntity {
     @Id
@@ -43,7 +44,6 @@ public class RuleRuntimeData extends BaseEntity {
         return  readService.findDocumentsSorted(RuleRuntimeData.class,
                 "rules.output.runtime",
                 "createdDate",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true

@@ -43,7 +43,6 @@ public class ActiveLoans {
         return  readService.findDocumentsSorted(ActiveLoans.class,
                 "active_loans",
                 "id",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 false

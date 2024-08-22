@@ -28,7 +28,6 @@ public class BaseOutput {
         return  readService.findDocumentsSorted(BaseOutput.class,
                 "BaseOutput",
                 "id",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 false

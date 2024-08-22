@@ -24,8 +24,9 @@ public class DataMigrationService {
     private static final List<String> models = List.of(
             "Case", "CaseDocumentDO", "COALabel", "COA", "CaseMerge",
             "SapperRule", "Status", "AuditEntity", "AuditSnapshot",
-            "AuditSnapshotOriginal", "Config"
-    );
+            "AuditSnapshotOriginal", "Config", "ActiveLoans","DatabaseSequence",
+            "DataMineReport","Entity","IngestionAudit","IngestionConfiguration",
+            "RuleRuntimeData","TemplateMapping");
 
     @Value("${class.path}")
     private String modelClassPaths;
@@ -57,10 +58,13 @@ public class DataMigrationService {
 
             List<Object> documents = fetchDocuments(serviceObj, lastProcessedDate, lastProcessedId);
 
+            log.info("Following document got for collection {}",collection);
+            log.info("Documents are {}", documents);
             if (documents.isEmpty()) {
                 log.info("No Data found in Collection : {}", collection);
                 return;
             }
+
 
             Object lastDocument = documents.get(documents.size() - 1);
             String processedId = extractField(lastDocument, "id");

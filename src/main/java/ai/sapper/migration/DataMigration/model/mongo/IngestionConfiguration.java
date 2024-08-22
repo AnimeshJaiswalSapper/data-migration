@@ -24,7 +24,7 @@ public class IngestionConfiguration implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private String ingestionConfigId;
+    private String id;
 
     private String sourceBucket;
 
@@ -65,7 +65,6 @@ public class IngestionConfiguration implements Serializable {
         return  readService.findDocumentsSorted(IngestionConfiguration.class,
                 "ingestion.config",
                 "createdAt",
-                true,
                 lastProcessedDate,
                 lastProcessedId,
                 true
