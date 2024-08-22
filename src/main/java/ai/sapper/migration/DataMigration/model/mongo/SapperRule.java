@@ -58,7 +58,7 @@ public class SapperRule extends BaseEntity {
     public List<SapperRule> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(SapperRule.class,
                 "rule",
-                "createdDate",
+                "lastModifiedDate",
                 true,
                 lastProcessedDate,
                 lastProcessedId,

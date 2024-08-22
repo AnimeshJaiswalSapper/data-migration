@@ -86,14 +86,11 @@ public class DataMigrationService {
             existingDataMigration.setLastProcessedDate(processedDate);
             //to be implemented after write operation
             existingDataMigration.setFailedIds(new ArrayList<>());
+            dataMigrationRepository.save(existingDataMigration);
         }else{
-            existingDataMigration.setLastProcessedId(processedId);
-            existingDataMigration.setLastProcessedDate(processedDate);
-            //to be implemented after write operation
-            existingDataMigration.setFailedIds(new ArrayList<>());
+            dataMigrationRepository.updateLastProcessedDetails(collecion,processedId,processedDate);
         }
 
-        dataMigrationRepository.save(existingDataMigration);
     }
 
     private String extractField(Object obj, String fieldName) throws Exception {

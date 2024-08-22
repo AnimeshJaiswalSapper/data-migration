@@ -35,7 +35,7 @@ public class Config extends BaseEntity {
     public List<Config> read(Date lastProcessedDate, String lastProcessedId) {
         return  readService.findDocumentsSorted(Config.class,
                 "config",
-                "id",
+                "lastModifiedDate",
                 true,
                 lastProcessedDate,
                 lastProcessedId,
