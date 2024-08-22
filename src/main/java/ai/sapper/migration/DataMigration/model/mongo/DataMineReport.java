@@ -13,12 +13,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@Builder
+
+
 @Document("data_mine_report")
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Component
+@ToString
 public class DataMineReport implements Serializable {
 
     @Serial

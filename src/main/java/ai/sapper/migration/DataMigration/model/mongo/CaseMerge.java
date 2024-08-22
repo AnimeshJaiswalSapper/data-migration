@@ -12,10 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
-@Data
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @ToString(callSuper = true)
 @Component
 public class CaseMerge extends BaseEntity {

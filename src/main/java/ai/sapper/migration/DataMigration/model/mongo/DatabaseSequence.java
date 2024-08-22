@@ -11,10 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 @Document(collection = "database_sequences")
-@Data
 @Component
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString
 public class DatabaseSequence {
     @Id
     private String id;

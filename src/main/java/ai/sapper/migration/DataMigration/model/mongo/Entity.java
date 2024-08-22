@@ -7,17 +7,16 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@Builder
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Document
+@ToString(callSuper = true)
 public class Entity extends BaseEntity {
     private static final long serialVersionUID = 1L;
     @Id

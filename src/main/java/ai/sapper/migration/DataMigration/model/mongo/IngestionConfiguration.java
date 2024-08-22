@@ -15,12 +15,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+
 @Document(collection = "ingestion.config")
 @Component
+@ToString
 public class IngestionConfiguration implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,10 +45,10 @@ public class IngestionConfiguration implements Serializable {
     private String createdBy;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private Date modifiedAt;
 
     private List<String> allowedExtensions;
 

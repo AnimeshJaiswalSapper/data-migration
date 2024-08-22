@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
+
+
 @Document("case_document")
 @CompoundIndexes({ @CompoundIndex(name = "caseId_type", def = "{'caseId':1, 'type':1}", unique = true)})
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -43,39 +43,5 @@ public class CaseDocumentDO extends BaseEntity{
                 lastProcessedId,
                 true
         );
-    }
-
-    public CaseDocumentDO(String id , CaseDocument caseDocument, String caseId)
-    {
-        this.id = id;
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-    }
-
-    public CaseDocumentDO(CaseDocument caseDocument, String caseId , CaseType type)
-    {
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-        this.type = type;
-    }
-
-    public CaseDocumentDO(String id , CaseDocument caseDocument)
-    {
-        this.id = id;
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-    }
-
-    public CaseDocumentDO(CaseDocument caseDocument)
-    {
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
-    }
-
-    public CaseDocumentDO(CaseDocument caseDocument, CaseType type)
-    {
-        this.type = type;
-        this.caseId = caseDocument.getCaseId();
-        this.caseDocument = caseDocument;
     }
 }

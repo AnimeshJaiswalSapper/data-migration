@@ -12,9 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 @Document(collection = "status")
-@Data
 @Component
-@ToString(callSuper = true)
+@ToString
 public class Status {
     @Id
     private String id;

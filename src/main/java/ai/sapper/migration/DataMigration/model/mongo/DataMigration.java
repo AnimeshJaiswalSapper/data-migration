@@ -11,10 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Document("dataMigration")
 public class DataMigration {
     @Id

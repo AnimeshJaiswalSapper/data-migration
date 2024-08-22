@@ -17,9 +17,8 @@ import java.util.Date;
 import java.util.List;
 
 @Document(collection = "audit.entity")
-@Data
 @Component
-@ToString(callSuper = true)
+@ToString
 public class AuditEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

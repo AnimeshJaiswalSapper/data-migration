@@ -12,9 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+
+
 @Document("coa")
 @ToString(callSuper = true)
 @Component

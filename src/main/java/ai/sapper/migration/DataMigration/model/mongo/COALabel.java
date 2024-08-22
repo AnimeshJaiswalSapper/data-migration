@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-@Data
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Document
 @ToString(callSuper = true)
 @Component
 public class COALabel extends BaseEntity {
@@ -34,7 +33,7 @@ public class COALabel extends BaseEntity {
     private List<Entity> expressionEntities;
     private Status status;
     private String conditionExp;
-    private Map<String, Condition> condition;
+    private Map<String, Object> condition;
     private String parentId;
     private boolean mandatory;
     private int priority;
@@ -51,13 +50,6 @@ public class COALabel extends BaseEntity {
                 lastProcessedId,
                 true
         );
-    }
-
-    public List<COALabel> castList(List<Object> originalList) {
-        return originalList.stream()
-                .filter(COALabel.class::isInstance)
-                .map(COALabel.class::cast)
-                .collect(Collectors.toList());
     }
 
 }

@@ -13,12 +13,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+
 @Document("form_norm_template_mapping")
 @Component
+@ToString
 public class TemplateMapping implements Serializable {
 
 

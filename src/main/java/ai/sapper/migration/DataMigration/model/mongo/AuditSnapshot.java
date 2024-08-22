@@ -17,10 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Data
+
 @Document(collection = "audit.snapshot")
 @Component
-@ToString(callSuper = true)
+@ToString
 public class AuditSnapshot implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class AuditSnapshot implements Serializable {
 
     private int version;
 
-    private Map<String, AuditDetail> data;
+    private Map<String, Object> data;
 
     @CreatedBy
     private String createdBy;

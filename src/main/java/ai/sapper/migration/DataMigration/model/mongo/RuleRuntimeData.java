@@ -14,12 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Data
+
 @ToString(callSuper = true)
 @Document(collection = "rules.output.runtime")
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Component
 public class RuleRuntimeData extends BaseEntity {
     @Id
@@ -29,7 +26,7 @@ public class RuleRuntimeData extends BaseEntity {
     private int version;
 
     @NonNull
-    private Map<String, List<FieldLevelData>> data;
+    private Map<String, List<Object>> data;
 
     private String caseDocumentId;
 
@@ -37,22 +34,7 @@ public class RuleRuntimeData extends BaseEntity {
 
     private Map<String, String> metadata;
 
-    public void appendFieldLevelData(String key, FieldLevelData fieldLevelData) {
-        List<FieldLevelData> listOfFieldLevelData = data.getOrDefault(key, new ArrayList<>());
-        if (!listOfFieldLevelData.isEmpty()) {
-            listOfFieldLevelData.removeIf(data -> data.getRuleId().equals(fieldLevelData.getRuleId()));
-        }
-        listOfFieldLevelData.add(fieldLevelData);
-        data.put(key, listOfFieldLevelData);
-    }
 
-    public void cleanDataMap() {
-        data.clear();
-    }
-
-    public void incrementVersion() {
-        version++;
-    }
 
     @Autowired
     ReadService readService;

@@ -14,15 +14,13 @@ import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@Builder
+
 @Document("active_loans")
 @CompoundIndexes({
         @CompoundIndex(name = "loan_collateral_database_idx", def = "{'loanNumber': 1, 'collateralId': 1, 'database': 1}")
 })
 @Component
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString
 public class ActiveLoans {
     @Serial
     private static final long serialVersionUID = 1L;

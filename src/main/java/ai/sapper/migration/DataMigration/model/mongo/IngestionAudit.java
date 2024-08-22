@@ -15,13 +15,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Data
-@Builder
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+
 @Document(collection = "ingestion.audit")
 @Component
+@ToString
 public class IngestionAudit implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,7 +41,7 @@ public class IngestionAudit implements Serializable {
     private String createdBy;
 
     @CreatedDate
-    private LocalDateTime ingestionTime;
+    private Date ingestionTime;
 
     @Autowired
     ReadService readService;

@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 @Document(collection = "rule")
-@Data
 @Component
 @ToString(callSuper = true)
 public class SapperRule extends BaseEntity {

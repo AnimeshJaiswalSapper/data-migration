@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 @Document("config")
-@Data
 @Component
 @ToString(callSuper = true)
 public class Config extends BaseEntity {

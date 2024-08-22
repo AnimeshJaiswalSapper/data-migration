@@ -20,11 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Data
-@Builder
+
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @ToString(callSuper = true)
 @Component
 public class Case extends BaseEntity {
@@ -36,13 +34,13 @@ public class Case extends BaseEntity {
     private String coaId;
     private String coaName;
     private String assignee;
-    @Builder.Default
+
     private CaseStatus status = CaseStatus.DRAFT;
     private CaseType type;
     private String channel;
     private String fileName;
     private Map<String,?> attributes;
-    @Builder.Default
+
     private Map<String, ?> metadata = new HashMap<>();
     private Date submitDate;
     private String rejectReason;
@@ -65,12 +63,5 @@ public class Case extends BaseEntity {
                lastProcessedId,
                true
         );
-    }
-
-    public List<Case> castList(List<Object> originalList) {
-        return originalList.stream()
-                .filter(Case.class::isInstance)
-                .map(Case.class::cast)
-                .collect(Collectors.toList());
     }
 }
