@@ -1,10 +1,9 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
-import ai.sapper.migration.DataMigration.common.BaseEntity;
+import ai.sapper.migration.DataMigration.common.mongo.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.ConfigLevel;
 import ai.sapper.migration.DataMigration.constants.ConfigType;
-import lombok.Data;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;

@@ -1,6 +1,6 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.common.BaseEntity;
+import ai.sapper.migration.DataMigration.common.mongo.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.Category;
 import ai.sapper.migration.DataMigration.constants.RuleType;
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;

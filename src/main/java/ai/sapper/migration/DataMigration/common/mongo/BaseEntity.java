@@ -1,4 +1,4 @@
-package ai.sapper.migration.DataMigration.common;
+package ai.sapper.migration.DataMigration.common.mongo;
 
 import lombok.Getter;
 import lombok.Setter;
