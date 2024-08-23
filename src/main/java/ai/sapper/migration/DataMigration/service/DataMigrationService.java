@@ -22,7 +22,7 @@ import java.util.Optional;
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> MODELS = List.of("COA");
+    private static final List<String> MODELS = List.of("Config");
 
     @Value("${mongo.class.path}")
     private String mongoModelClassPath;

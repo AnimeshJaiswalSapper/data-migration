@@ -24,7 +24,7 @@ repositories {
 				password = System.getenv("GIT_TOKEN")
 			}
 		}
-//	}
+	}
 }
 
 dependencies {

@@ -15,5 +15,26 @@ public enum SpDocumentType {
     EncryptedOutputFile,
 
     CASE,
-    UDPLatest
+    UDPLatest,
+
+    ITR,
+    FINANCIAL_STATEMENT,
+    EXTRACTION,
+    NORMALIZATION;
+
+    public static SpDocumentType fromCaseType(CaseType caseType) {
+        switch (caseType) {
+            case ITR:
+                return ITR;
+            case FINANCIAL_STATEMENT:
+                return FINANCIAL_STATEMENT;
+
+            case EXTRACTION:
+                return EXTRACTION;
+            case NORMALIZATION:
+                return NORMALIZATION;
+            default:
+                throw new IllegalArgumentException("Unknown CaseType: " + caseType);
+        }
+    }
 }
