@@ -23,4 +23,6 @@ public class BaseEntity implements Serializable {
     private String lastModifiedBy;
     @LastModifiedDate
     private Date lastModifiedDate;
+
+
 }

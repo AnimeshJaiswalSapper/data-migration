@@ -1,13 +1,14 @@
 package ai.sapper.migration.DataMigration.service;
 
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
+import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -17,88 +18,106 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static ai.sapper.migration.DataMigration.constants.Collections.*;
-
 @Component
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> models = List.of(
-            CASE, CASE_DOCUMENT_DO, COA_LABEL, COA, CASE_MERGE,
-            SAPPER_RULE, STATUS, AUDIT_ENTITY, AUDIT_SNAPSHOT,
-            AUDIT_SNAPSHOT_ORIGINAL, CONFIG, ACTIVE_LOANS, DATABASE_SEQUENCE,
-            DATA_MINE_REPORT, ENTITY, INGESTION_AUDIT, INGESTION_CONFIGURATION,
-            RULE_RUNTIME_DATA, TEMPLATE_MAPPING);
+    private static final List<String> MODELS = List.of("COA");
 
-    @Value("${class.path}")
-    private String modelClassPaths;
+    @Value("${mongo.class.path}")
+    private String mongoModelClassPath;
+
+    @Value("${postgres.class.path}")
+    private String postgresModelClassPath;
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private DataMigrationRepository dataMigrationRepository;
 
     @Autowired
-    private DataMigrationRepository dataMigrationRepository;
+    private PostgresRepository postgresRepository;
 
     @PostConstruct
     public void start() {
         log.info("---------STARTED DATA MIGRATION------");
-        models.forEach(this::processModel);
+        MODELS.forEach(this::processModel);
     }
 
     private void processModel(String collection) {
-        String classPath = modelClassPaths + "." + collection;
         try {
-            Object serviceObj = applicationContext.getBean(Class.forName(classPath));
+            Class<?> mongoModelClass = loadClass(mongoModelClassPath, collection);
+            Class<?> postgresModelClass = loadClass(postgresModelClassPath, collection);
+
+            Object mongoModelObj = applicationContext.getBean(mongoModelClass);
+            Object postgresModelObj = applicationContext.getBean(postgresModelClass);
 
             DataMigration dataMigration = dataMigrationRepository.findByCollectionName(collection);
-
             Date lastProcessedDate = dataMigration != null ? dataMigration.getLastProcessedDate() : null;
             String lastProcessedId = dataMigration != null ? dataMigration.getLastProcessedId() : null;
 
-            List<Object> documents = fetchDocuments(serviceObj, lastProcessedDate, lastProcessedId);
+            List<Object> fetchedDocuments = fetchDocuments(mongoModelObj, lastProcessedDate, lastProcessedId);
 
-            log.info("Following document got for collection {}",collection);
-            log.info("Documents are {}", documents);
-
-            if (documents.isEmpty()) {
-                log.info("No Data found for Collection : {}", collection);
+            if (fetchedDocuments.isEmpty()) {
+                log.info("No Data found for Collection: {}", collection);
                 return;
             }
 
+            saveDocuments(postgresModelObj, fetchedDocuments);
 
-            Object lastDocument = documents.get(documents.size() - 1);
-            String processedId = extractField(lastDocument, "id");
-            Date processedDate = extractDateField(lastDocument);
-
-            if(dataMigration!=null)
-                updateDataMigration(processedId,processedDate,dataMigration);
-            else
-                saveDataMigration(collection,processedId,processedDate);
-
+            updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration);
         } catch (Exception e) {
             log.error("Error processing model {}: {}", collection, e.getMessage(), e);
         }
     }
 
-    private List<Object> fetchDocuments(Object serviceObj, Date lastProcessedDate, String lastProcessedId) throws Exception {
-        Method readMethod = serviceObj.getClass().getMethod(READ, Date.class, String.class);
-        return (List<Object>) readMethod.invoke(serviceObj, lastProcessedDate, lastProcessedId);
+    private Class<?> loadClass(String classPath, String collection) throws ClassNotFoundException {
+        return Class.forName(classPath + "." + collection);
     }
 
-    private void updateDataMigration(String processedId, Date processedDate, DataMigration existingDataMigration) throws Exception {
+    private List<Object> fetchDocuments(Object mongoModelObj, Date lastProcessedDate, String lastProcessedId) throws Exception {
+        Method readMethod = mongoModelObj.getClass().getMethod("read", Date.class, String.class);
+        return (List<Object>) readMethod.invoke(mongoModelObj, lastProcessedDate, lastProcessedId);
+    }
+
+    @Transactional
+    private void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments) throws Exception {
+        Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
+
+        for (Object document : fetchedDocuments) {
+            Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
+            if (postgresEntity != null) {
+                postgresRepository.save(postgresEntity);
+            }
+        }
+    }
+
+    private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration) {
+        Object lastDocument = fetchedDocuments.get(fetchedDocuments.size() - 1);
+        try {
+            String processedId = extractField(lastDocument, "id");
+            Date processedDate = extractDateField(lastDocument);
+
+            if (dataMigration != null) {
+                updateDataMigration(processedId, processedDate, dataMigration);
+            } else {
+                saveDataMigration(collection, processedId, processedDate);
+            }
+        } catch (Exception e) {
+            log.error("Error updating/saving DataMigration for collection {}: {}", collection, e.getMessage(), e);
+        }
+    }
+
+    private void updateDataMigration(String processedId, Date processedDate, DataMigration existingDataMigration) {
         existingDataMigration.setLastProcessedId(processedId);
         existingDataMigration.setLastProcessedDate(processedDate);
-//        implemented after write
-//        existingDataMigration.setFailedIds(new ArrayList<>());
         dataMigrationRepository.save(existingDataMigration);
     }
 
-    private void saveDataMigration(String collecion, String processedId,Date processedDate) throws Exception {
+    private void saveDataMigration(String collection, String processedId, Date processedDate) {
         DataMigration dataMigration = new DataMigration();
-        dataMigration.setCollectionName(collecion);
+        dataMigration.setCollectionName(collection);
         dataMigration.setLastProcessedId(processedId);
         dataMigration.setFailedIds(new ArrayList<>());
         dataMigration.setLastProcessedDate(processedDate);
@@ -124,9 +143,9 @@ public class DataMigrationService {
     private Optional<Field> findDateField(Object obj) {
         Class<?> clazz = obj.getClass();
 
-        Field field = findFieldInHierarchy(clazz, CREATED_DATE);
+        Field field = findFieldInHierarchy(clazz, "createdDate");
         if (field == null) {
-            field = findFieldInHierarchy(clazz, CREATED_AT);
+            field = findFieldInHierarchy(clazz, "createdAt");
         }
 
         if (field != null) {

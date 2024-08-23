@@ -17,6 +17,7 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @Document("coa")
 @ToString(callSuper = true)
 @Component
+@Getter
 public class COA extends BaseEntity {
     @Id
     protected String id;
