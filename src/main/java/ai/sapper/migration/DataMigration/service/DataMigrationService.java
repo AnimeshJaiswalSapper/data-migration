@@ -13,16 +13,13 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> MODELS = List.of("Config");
+    private static final List<String> MODELS = List.of("COALabel");
 
     @Value("${mongo.class.path}")
     private String mongoModelClassPath;
@@ -64,9 +61,10 @@ public class DataMigrationService {
                 return;
             }
 
-            saveDocuments(postgresModelObj, fetchedDocuments);
+            List<Map<String,Object>> failedDocs = new ArrayList<>();
+            saveDocuments(postgresModelObj, fetchedDocuments,failedDocs);
 
-            updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration);
+            updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration,failedDocs);
         } catch (Exception e) {
             log.error("Error processing model {}: {}", collection, e.getMessage(), e);
         }
@@ -82,45 +80,52 @@ public class DataMigrationService {
     }
 
     @Transactional
-    private void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments) throws Exception {
+    private void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments,List<Map<String,Object>> failedDocs) throws Exception {
         Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
 
         for (Object document : fetchedDocuments) {
-            Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
-            if (postgresEntity != null) {
-                postgresRepository.save(postgresEntity);
+            try{
+                Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
+                if (postgresEntity != null)
+                    postgresRepository.save(postgresEntity);
+            }catch (Exception e){
+                Map<String,Object> mp = new HashMap<>();
+                mp.put(e.getMessage(),document);
+                failedDocs.add(mp);
+                log.error(e.getMessage());
             }
         }
     }
 
-    private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration) {
+    private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration, List<Map<String,Object>> failedDocs) {
         Object lastDocument = fetchedDocuments.get(fetchedDocuments.size() - 1);
         try {
             String processedId = extractField(lastDocument, "id");
             Date processedDate = extractDateField(lastDocument);
 
             if (dataMigration != null) {
-                updateDataMigration(processedId, processedDate, dataMigration);
+                updateDataMigration(processedId, processedDate,failedDocs, dataMigration);
             } else {
-                saveDataMigration(collection, processedId, processedDate);
+                saveDataMigration(collection, processedId,failedDocs, processedDate);
             }
         } catch (Exception e) {
             log.error("Error updating/saving DataMigration for collection {}: {}", collection, e.getMessage(), e);
         }
     }
 
-    private void updateDataMigration(String processedId, Date processedDate, DataMigration existingDataMigration) {
+    private void updateDataMigration(String processedId, Date processedDate, List<Map<String,Object>> failedDocs, DataMigration existingDataMigration) {
         existingDataMigration.setLastProcessedId(processedId);
         existingDataMigration.setLastProcessedDate(processedDate);
+        existingDataMigration.getFailedDocs().addAll(failedDocs);
         dataMigrationRepository.save(existingDataMigration);
     }
 
-    private void saveDataMigration(String collection, String processedId, Date processedDate) {
+    private void saveDataMigration(String collection, String processedId,List<Map<String,Object>> failedDocs, Date processedDate) {
         DataMigration dataMigration = new DataMigration();
         dataMigration.setCollectionName(collection);
         dataMigration.setLastProcessedId(processedId);
-        dataMigration.setFailedIds(new ArrayList<>());
         dataMigration.setLastProcessedDate(processedDate);
+        dataMigration.setFailedDocs(failedDocs);
         dataMigrationRepository.save(dataMigration);
     }
 

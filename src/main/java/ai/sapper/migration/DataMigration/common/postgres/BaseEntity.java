@@ -20,16 +20,16 @@ public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    @CreatedBy
+
     @Column(name = "created_by")
     private String createdBy;
-    @CreationTimestamp
+
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
-    @LastModifiedBy
+
     @Column(name = "last_modified_by")
     private String lastModifiedBy;
-    @UpdateTimestamp
+
     @Column(name = "last_modified_date")
     private ZonedDateTime lastModifiedDate = ZonedDateTime.now();
 

@@ -3,6 +3,9 @@ package ai.sapper.migration.DataMigration.model.mongo;
 import ai.sapper.migration.DataMigration.common.mongo.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.Status;
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -20,14 +23,15 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @Document
 @ToString(callSuper = true)
 @Component
+@Getter
+@Setter
 public class COALabel extends BaseEntity {
 
     @Id
     @Indexed(unique = true)
     protected String id;
 
-    @DocumentReference
-    private COA coa;
+    private String coa;
     private String name;
     private String expression;
     private List<Entity> expressionEntities;
@@ -35,8 +39,12 @@ public class COALabel extends BaseEntity {
     private String conditionExp;
     private Map<String, Object> condition;
     private String parentId;
+    private String scope;
     private boolean mandatory;
     private int priority;
+    private String section;
+    private String subSection;
+    private String tableName;
 
     @Autowired
     ReadService readService;

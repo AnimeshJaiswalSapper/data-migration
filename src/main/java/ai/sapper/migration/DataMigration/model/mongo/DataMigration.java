@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -19,6 +21,6 @@ public class DataMigration {
     private String collectionName;
     private String lastProcessedId;
     private Date lastProcessedDate;
-    private List<String> failedIds;
+    private List<Map<String,Object>> failedDocs;
 
 }
