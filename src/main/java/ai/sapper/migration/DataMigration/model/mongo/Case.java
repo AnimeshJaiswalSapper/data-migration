@@ -7,6 +7,8 @@ import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -28,6 +30,8 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(callSuper = true)
 @Component
+@Getter
+@Setter
 public class Case extends BaseEntity {
     @Id
     @Indexed(unique = true)

@@ -3,6 +3,7 @@ package ai.sapper.migration.DataMigration.model.mongo;
 import ai.sapper.migration.DataMigration.common.mongo.BaseEntity;
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -19,6 +20,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(callSuper = true)
 @Component
+@Getter
 public class Entity extends BaseEntity {
     private static final long serialVersionUID = 1L;
     @Id

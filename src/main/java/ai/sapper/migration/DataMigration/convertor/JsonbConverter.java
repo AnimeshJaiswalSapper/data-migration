@@ -7,26 +7,42 @@ import jakarta.persistence.Converter;
 import java.io.IOException;
 import java.util.Map;
 
-@Converter
-public class JsonbConverter implements AttributeConverter<Map<String, ?>, String> {
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+@Converter(autoApply = true)
+public class JsonbConverter implements AttributeConverter<Map<String, Object>, String> {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(Map<String, ?> attribute) {
+    public String convertToDatabaseColumn(Map<String, Object> attribute) {
+        if (attribute == null) {
+            return null;
+        }
         try {
             return objectMapper.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Could not serialize map to JSON", e);
+            throw new IllegalArgumentException("Error converting map to JSON", e);
         }
     }
 
     @Override
-    public Map<String, ?> convertToEntityAttribute(String dbData) {
+    public Map<String, Object> convertToEntityAttribute(String dbData) {
+        if (dbData == null) {
+            return null;
+        }
         try {
-            return objectMapper.readValue(dbData, Map.class);
+            return objectMapper.readValue(dbData, HashMap.class);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Could not deserialize JSON to map", e);
+            throw new IllegalArgumentException("Error converting JSON to map", e);
         }
     }
 }
+
