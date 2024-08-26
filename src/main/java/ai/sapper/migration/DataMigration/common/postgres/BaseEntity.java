@@ -31,7 +31,7 @@ public class BaseEntity implements Serializable {
     private String lastModifiedBy;
 
     @Column(name = "last_modified_date")
-    private ZonedDateTime lastModifiedDate = ZonedDateTime.now();
+    private ZonedDateTime lastModifiedDate;
 
 
 }
