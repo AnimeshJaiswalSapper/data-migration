@@ -2,6 +2,7 @@ package ai.sapper.migration.DataMigration.model.mongo;
 
 import ai.sapper.migration.DataMigration.constants.CaseType;
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
+import lombok.Getter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedBy;
@@ -19,6 +20,7 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 @Document(collection = "audit.snapshot")
 @Component
+@Getter
 @ToString
 public class AuditSnapshot implements Serializable {
 

@@ -3,6 +3,8 @@ package ai.sapper.migration.DataMigration.model.mongo;
 import ai.sapper.migration.DataMigration.constants.CaseType;
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.unifiedframework.model.block.CaseDocument;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,6 +20,8 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @Document(collection = "audit.entity")
 @Component
 @ToString
+@Getter
+@Setter
 public class AuditEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

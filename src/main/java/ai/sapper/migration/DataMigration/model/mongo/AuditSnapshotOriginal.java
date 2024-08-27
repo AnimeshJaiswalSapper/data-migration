@@ -18,6 +18,7 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 @Document(collection = "audit.snapshot.original")
 @Component
+@Getter
 @ToString
 public class AuditSnapshotOriginal implements Serializable {
 
@@ -44,13 +45,13 @@ public class AuditSnapshotOriginal implements Serializable {
     private String modifiedBy;
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private Date modifiedAt;
 
     @Autowired
     ReadService readService;
 
-    public List<AuditSnapshot> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(AuditSnapshot.class,
+    public List<AuditSnapshotOriginal> read(Date lastProcessedDate, String lastProcessedId) {
+        return  readService.findDocumentsSorted(AuditSnapshotOriginal.class,
                 "audit.snapshot.original",
                 CREATED_AT,
                 lastProcessedDate,
