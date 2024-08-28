@@ -19,7 +19,7 @@ import java.util.*;
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> MODELS = List.of("AuditEntity","AuditSnapshot","AuditSnapshotOriginal","Case","CaseDocumentDO","COA","COALabel","Config","SapperRule","Status");
+    private static final List<String> MODELS = List.of("Case");
 
     @Value("${mongo.class.path}")
     private String mongoModelClassPath;

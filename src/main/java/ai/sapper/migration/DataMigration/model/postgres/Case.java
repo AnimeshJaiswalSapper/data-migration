@@ -1,7 +1,12 @@
 package ai.sapper.migration.DataMigration.model.postgres;
 
 import ai.sapper.migration.DataMigration.common.postgres.BaseEntity;
+import ai.sapper.migration.DataMigration.common.postgres.ESpIntakeCaseState;
 import ai.sapper.migration.DataMigration.constants.CaseStatus;
+import ai.sapper.migration.DataMigration.constants.CaseType;
+import ai.sapper.migration.DataMigration.convertor.CaseRetentionConverter;
+import ai.sapper.migration.DataMigration.convertor.CaseStatusConverter;
+import ai.sapper.migration.DataMigration.convertor.CaseTimesConverter;
 import ai.sapper.migration.DataMigration.convertor.JsonbConverter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -58,11 +63,6 @@ public class Case implements Serializable {
     @Column(name = "input_source")
     private String channel;
 
-    @Convert(converter = JsonbConverter.class)
-    @Column(name = "attributes", columnDefinition = "jsonb")
-    @ColumnTransformer(write = "?::jsonb")
-    private Map<String, Object> attributes = new HashMap<>();
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "closed_timestamp")
     private Long submitDate;
@@ -91,38 +91,21 @@ public class Case implements Serializable {
     @Column(name = "last_modified_date")
     private Long lastModifiedDate;
 
-    @Column(name = "system_process_time_start")
-    private Long systemProcessTimeStart;
 
-    @Column(name = "system_process_time_end")
-    private Long systemProcessTimeEnd;
+    @Convert(converter = CaseTimesConverter.class)
+    @Column(name = "case_times", columnDefinition = "jsonb")
+    @ColumnTransformer(read = "case_times::TEXT", write = "?::jsonb")
+    private CaseTimes caseTimes;
 
-    @Column(name = "system_process_time_in_seconds")
-    private Long systemProcessTimeInSeconds;
 
-    @Column(name = "touch_time_start")
-    private Long touchTimeStart;
+    @Convert(converter = CaseRetentionConverter.class)
+    @Column(name = "retention", columnDefinition = "jsonb")
+    @ColumnTransformer(read = "retention::TEXT", write = "?::jsonb")
+    private CaseRetention caseRetention;
 
-    @Column(name = "touch_time_end")
-    private Long touchTimeEnd;
-
-    @Column(name = "touch_time_in_seconds")
-    private Long touchTimeInSeconds;
-
-    @Column(name = "process_time_start")
-    private Long processTimeStart;
-
-    @Column(name = "process_time_end")
-    private Long processTimeEnd;
-
-    @Column(name = "process_time_in_seconds")
-    private Long processTimeInSeconds;
-
-    @Column(name = "file_deleted")
-    private Boolean fileDeleted;
-
-    @Column(name = "file_deleted_at")
-    private Long fileDeletedAt;
+//    private Map<String, Object> attributes = new HashMap<>();
+    @Embedded
+    private CaseAttributes caseAttributes;
 
     public Case convert(Object mongoDocument) {
         try {
@@ -134,8 +117,8 @@ public class Case implements Serializable {
                         .coaId(mongoCase.getCoaId())
                         .coaName(mongoCase.getCoaName())
                         .assignee(mongoCase.getAssignee())
-                        .status(String.valueOf(mongoCase.getStatus()))
-                        .type(mongoCase.getType() != null ? String.valueOf(mongoCase.getType()) : null)
+                        .status(CaseStatusConverter.convert(mongoCase.getStatus()).toString())
+                        .type(convertType(mongoCase.getType()))
                         .channel(mongoCase.getChannel())
                         .submitDate(mongoCase.getSubmitDate() != null ? mongoCase.getSubmitDate().getTime() : null)
                         .rejectReason(mongoCase.getRejectReason())
@@ -150,7 +133,7 @@ public class Case implements Serializable {
 
                 // set attributes
                 if(mongoCase.getAttributes() != null)
-                    caseEntity.setAttributes((Map<String, Object>) mongoCase.getAttributes());
+                    setAttributes(mongoCase.getAttributes(), caseEntity);
 
                 // Extract metadata
                 setMetaData(mongoCase.getMetadata(), caseEntity);
@@ -166,45 +149,139 @@ public class Case implements Serializable {
 
     private void setMetaData(Map<String, ?> metaData, Case caseEntity) {
         try {
+            CaseTimes caseTimes = new CaseTimes();
+            CaseRetention caseRetention = new CaseRetention();
+
             if (metaData.containsKey("systemProcessTimeStart")) {
-                caseEntity.setSystemProcessTimeStart(convertToMillis(metaData.get("systemProcessTimeStart")));
+               caseTimes.setSystemProcessTimeStart(convertToMillis(metaData.get("systemProcessTimeStart")));
             }
             if (metaData.containsKey("systemProcessTimeEnd")) {
-                caseEntity.setSystemProcessTimeEnd(convertToMillis(metaData.get("systemProcessTimeEnd")));
+                caseTimes.setSystemProcessTimeEnd(convertToMillis(metaData.get("systemProcessTimeEnd")));
             }
             if (metaData.containsKey("systemProcessTimeInSeconds")) {
-                caseEntity.setSystemProcessTimeInSeconds(convertToSeconds(metaData.get("systemProcessTimeInSeconds")));
+                caseTimes.setSystemProcessTimeInSeconds(convertToSeconds(metaData.get("systemProcessTimeInSeconds")));
             }
             if (metaData.containsKey("touchTimeStart")) {
-                caseEntity.setTouchTimeStart(convertToMillis(metaData.get("touchTimeStart")));
+                caseTimes.setTouchTimeStart(convertToMillis(metaData.get("touchTimeStart")));
             }
             if (metaData.containsKey("touchTimeEnd")) {
-                caseEntity.setTouchTimeEnd(convertToMillis(metaData.get("touchTimeEnd")));
+                caseTimes.setTouchTimeEnd(convertToMillis(metaData.get("touchTimeEnd")));
             }
             if (metaData.containsKey("touchTimeInSeconds")) {
-                caseEntity.setTouchTimeInSeconds(convertToSeconds(metaData.get("touchTimeInSeconds")));
+                caseTimes.setTouchTimeInSeconds(convertToSeconds(metaData.get("touchTimeInSeconds")));
             }
             if (metaData.containsKey("processTimeStart")) {
-                caseEntity.setProcessTimeStart(convertToMillis(metaData.get("processTimeStart")));
+                caseTimes.setProcessTimeStart(convertToMillis(metaData.get("processTimeStart")));
             }
             if (metaData.containsKey("processTimeEnd")) {
-                caseEntity.setProcessTimeEnd(convertToMillis(metaData.get("processTimeEnd")));
+                caseTimes.setProcessTimeEnd(convertToMillis(metaData.get("processTimeEnd")));
             }
             if (metaData.containsKey("processTimeInSeconds")) {
-                caseEntity.setProcessTimeInSeconds(convertToSeconds(metaData.get("processTimeInSeconds")));
+                caseTimes.setProcessTimeInSeconds(convertToSeconds(metaData.get("processTimeInSeconds")));
             }
             if (metaData.containsKey("fileDeletedAt")) {
-                caseEntity.setFileDeletedAt(convertToMillis(metaData.get("fileDeletedAt")));
+                caseRetention.setFileDeletedAt(convertToMillis(metaData.get("fileDeletedAt")));
             }
 
             if(metaData.containsKey("fileDeleted")){
-                caseEntity.setFileDeleted(Boolean.valueOf((String) metaData.get("fileDeleted")));
+                caseRetention.setFileDeleted(Boolean.valueOf((String) metaData.get("fileDeleted")));
             }
+
+            caseEntity.setCaseTimes(caseTimes);
+            caseEntity.setCaseRetention(caseRetention);
 
         } catch (Exception e) {
             log.error("Error processing metadata: {}", e.getMessage(), e);
             throw new RuntimeException("Metadata processing failed", e);
         }
+    }
+
+
+    private void setAttributes(Map<String, ?> attributes, Case caseEntity) {
+        try {
+            CaseAttributes caseAttributes = new CaseAttributes();
+
+            if (attributes.containsKey("financialIndicator")) {
+                Object financialIndicatorObj = attributes.get("financialIndicator");
+                if (financialIndicatorObj instanceof Map) {
+                    Map<String, Object> financialIndicatorMap = (Map<String, Object>) financialIndicatorObj;
+                    caseAttributes.setFinancialIndicator((String) financialIndicatorMap.get("id"));
+                }
+            }
+
+            if (attributes.containsKey("database")) {
+                Object databaseObj = attributes.get("database");
+                if (databaseObj instanceof Map) {
+                    Map<String, Object> databaseMap = (Map<String, Object>) databaseObj;
+                    caseAttributes.setDatabase((String) databaseMap.get("id"));
+                }
+            }
+
+            if (attributes.containsKey("dateType")) {
+                Object dateTypeObj = attributes.get("dateType");
+                if (dateTypeObj instanceof Map) {
+                    Map<String, Object> dateTypeMap = (Map<String, Object>) dateTypeObj;
+                    caseAttributes.setDateType((String) dateTypeMap.get("id"));
+                }
+            }
+
+            if (attributes.containsKey("documentType")) {
+                Object documentTypeObj = attributes.get("documentType");
+                if (documentTypeObj instanceof Map) {
+                    Map<String, Object> documentTypeMap = (Map<String, Object>) documentTypeObj;
+                    caseAttributes.setDocumentType((String) documentTypeMap.get("id"));
+                }
+            }
+
+            if (attributes.containsKey("purpose")) {
+                Object purposeObj = attributes.get("purpose");
+                if (purposeObj instanceof Map) {
+                    Map<String, Object> purposeMap = (Map<String, Object>) purposeObj;
+                    caseAttributes.setPurpose((String) purposeMap.get("id"));
+                }
+            }
+
+            if (attributes.containsKey("startDate")) {
+                String startDateStr = (String) attributes.get("startDate");
+                caseAttributes.setStartDate(convertToMillis(startDateStr));
+            }
+
+            if (attributes.containsKey("endDate")) {
+                String endDateStr = (String) attributes.get("endDate");
+                caseAttributes.setEndDate(convertToMillis(endDateStr));
+            }
+
+            if (attributes.containsKey("frequencyType")) {
+                Object frequencyTypeObj = attributes.get("frequencyType");
+                if (frequencyTypeObj instanceof Map) {
+                    Map<String, Object> frequencyTypeMap = (Map<String, Object>) frequencyTypeObj;
+                    caseAttributes.setFrequencyType((String) frequencyTypeMap.get("id"));
+                }
+            }
+
+            if (attributes.containsKey("language")) {
+                Object languageObj = attributes.get("language");
+                if (languageObj instanceof Map) {
+                    Map<String, Object> languageMap = (Map<String, Object>) languageObj;
+                    caseAttributes.setLanguage((String) languageMap.get("id"));
+                }
+            }
+
+
+
+            caseEntity.setCaseAttributes(caseAttributes);
+
+        } catch (Exception e) {
+            log.error("Error processing metadata: {}", e.getMessage(), e);
+            throw new RuntimeException("Metadata processing failed", e);
+        }
+    }
+
+    String convertType(CaseType type){
+        if(type != null){
+            return type == CaseType.FINANCIAL_STATEMENT ? "FS" : type.toString();
+        }
+        return null;
     }
 
     private Long convertToMillis(Object dateTime) {
