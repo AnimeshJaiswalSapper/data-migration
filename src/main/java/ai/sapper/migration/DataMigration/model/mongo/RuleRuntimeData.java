@@ -3,6 +3,7 @@ package ai.sapper.migration.DataMigration.model.mongo;
 import ai.sapper.migration.DataMigration.common.mongo.BaseEntity;
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.unifiedframework.model.block.CaseDocument;
+import lombok.Data;
 import lombok.NonNull;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Map;
 @Document(collection = "rules.output.runtime")
 @ToString(callSuper = true)
 @Component
+@Data
 public class RuleRuntimeData extends BaseEntity {
     @Id
     protected String id;

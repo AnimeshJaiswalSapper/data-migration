@@ -3,6 +3,7 @@ package ai.sapper.migration.DataMigration.model.postgres;
 import ai.sapper.migration.DataMigration.common.postgres.BaseEntity;
 import ai.sapper.migration.DataMigration.convertor.StringListConverter;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

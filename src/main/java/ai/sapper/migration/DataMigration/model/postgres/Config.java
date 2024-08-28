@@ -5,6 +5,7 @@ import ai.sapper.migration.DataMigration.constants.ConfigType;
 import ai.sapper.migration.DataMigration.constants.Status;
 import ai.sapper.migration.DataMigration.convertor.JsonbConverter;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnTransformer;
@@ -30,9 +31,6 @@ import java.util.Map;
 @Component("config_postgres")
 @Table(name = "config")
 public class Config {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     @Id
     private String id;

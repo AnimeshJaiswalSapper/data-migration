@@ -7,6 +7,7 @@ import ai.sapper.migration.DataMigration.constants.Status;
 import ai.sapper.migration.DataMigration.convertor.ConditionConvertor;
 import ai.sapper.migration.DataMigration.convertor.EntityConvertor;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
