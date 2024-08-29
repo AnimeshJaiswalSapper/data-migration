@@ -32,17 +32,12 @@ public class CaseDataId implements Serializable {
     public CaseDataId() {
     }
 
-    public CaseDataId(@NonNull String id, SpDocumentType type) {
+    public CaseDataId(@NonNull String id, @NonNull SpDocumentType type) {
         if (id == null) {
             throw new NullPointerException("id is marked non-null but is null");
         } else {
             this.id = id;
-            if(type!=null){
-                this.type = type.name();
-            }else{
-                this.type=null;
-            }
-
+            this.type = type.name();
         }
     }
 }

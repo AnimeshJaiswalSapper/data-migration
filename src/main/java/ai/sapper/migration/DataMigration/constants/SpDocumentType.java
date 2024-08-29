@@ -18,9 +18,7 @@ public enum SpDocumentType {
     UDPLatest,
 
     ITR,
-    FINANCIAL_STATEMENT,
-    EXTRACTION,
-    NORMALIZATION;
+    FINANCIAL_STATEMENT;
 
     public static SpDocumentType fromCaseType(CaseType caseType) {
         switch (caseType) {
@@ -28,11 +26,10 @@ public enum SpDocumentType {
                 return ITR;
             case FINANCIAL_STATEMENT:
                 return FINANCIAL_STATEMENT;
-
             case EXTRACTION:
-                return EXTRACTION;
+                return UDPJson;
             case NORMALIZATION:
-                return NORMALIZATION;
+                return NormalizationOutput;
             default:
                 throw new IllegalArgumentException("Unknown CaseType: " + caseType);
         }

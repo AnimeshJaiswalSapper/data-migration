@@ -1,5 +1,6 @@
 package ai.sapper.migration.DataMigration.model.postgres;
 
+import ai.sapper.migration.DataMigration.constants.SpDocumentType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Id;
@@ -46,15 +47,12 @@ public class RuleRuntimeData {
     public CaseDocumentDO convert(Object mongoDocument) throws JsonProcessingException {
         try {
             if (mongoDocument instanceof ai.sapper.migration.DataMigration.model.mongo.RuleRuntimeData mongoConfig) {
-
                 CaseDocumentDO ruleRuntimeData = CaseDocumentDO.builder()
-                        .id(mongoConfig.getId())
-                        .caseId(mongoConfig.getCaseDocumentId())
+                        .id(new CaseDataId(mongoConfig.getCaseDocumentId(), SpDocumentType.QaCheckOutput))
                         .createdBy(mongoConfig.getCreatedBy())
-                        .createdDate(mongoConfig.getCreatedDate().getTime())
+                        .createdTime(mongoConfig.getCreatedDate().getTime())
                         .lastModifiedBy(mongoConfig.getLastModifiedBy())
-                        .lastModifiedDate(mongoConfig.getLastModifiedDate().getTime())
-                        .type("QaCheckOutput")
+                        .updatedTime(mongoConfig.getLastModifiedDate().getTime())
                         .version(mongoConfig.getVersion())
                         .build();
 

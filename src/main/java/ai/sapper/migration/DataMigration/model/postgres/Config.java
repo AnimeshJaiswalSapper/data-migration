@@ -48,18 +48,6 @@ public class Config {
     @Convert(converter = JsonbConverter.class)
     @ColumnTransformer(write = "?::jsonb")
     private Map<String, Object> meta;
-    @CreatedBy
-    @Column(name = "created_by")
-    private String createdBy;
-    @CreatedDate
-    @Column(name = "created_date")
-    private ZonedDateTime createdDate;
-    @LastModifiedBy
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
-    @Column(name = "last_modified_date")
-    @Builder.Default
-    private ZonedDateTime lastModifiedDate = ZonedDateTime.now();
 
     public Config convert(Object mongoDocument) {
         try {
@@ -73,25 +61,11 @@ public class Config {
                         .userId(mongoConfig.getUserId())
                         .meta(mongoConfig.getMeta())
                         .build();
-
-                config.setCreatedBy(mongoConfig.getCreatedBy());
-                config.setCreatedDate(convertToZonedDateTime(mongoConfig.getCreatedDate()));
-                config.setLastModifiedBy(mongoConfig.getLastModifiedBy());
-                config.setLastModifiedDate(convertToZonedDateTime(mongoConfig.getLastModifiedDate()));
-
                 return config;
             }
         }  catch (Exception e) {
             log.error("Error converting Config document: {}", e.getMessage(), e);
             throw e;
-        }
-        return null;
-    }
-
-
-    private ZonedDateTime convertToZonedDateTime(Date date) {
-        if (date != null) {
-            return ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
         }
         return null;
     }

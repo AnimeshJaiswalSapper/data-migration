@@ -3,6 +3,7 @@ package ai.sapper.migration.DataMigration.service;
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
 import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
+import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.*;
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> MODELS = List.of("Case");
+    private static final List<String> MODELS = List.of("AuditEntity","AuditSnapshot","AuditSnapshotOriginal","Case","CaseDocumentDO","COA","COALabel","Config","Entity","SapperRule","Status","RuleRuntimeData");
 
     @Value("${mongo.class.path}")
     private String mongoModelClassPath;
@@ -61,8 +62,8 @@ public class DataMigrationService {
                 return;
             }
 
-            List<Map<String,Object>> failedDocs = new ArrayList<>();
-            saveDocuments(postgresModelObj, fetchedDocuments,failedDocs);
+            List<Object> failedDocs = new ArrayList<>();
+            saveDocuments(postgresModelObj, fetchedDocuments,failedDocs,collection);
 
             updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration,failedDocs);
         } catch (Exception e) {
@@ -80,28 +81,32 @@ public class DataMigrationService {
     }
 
     @Transactional
-    private void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments,List<Map<String,Object>> failedDocs) throws Exception {
+    private void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments,List<Object> failedDocs,String collection) throws Exception {
         Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
 
         for (Object document : fetchedDocuments) {
             try{
                 Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
-                if (postgresEntity != null)
-                    postgresRepository.save(postgresEntity);
+                if (postgresEntity != null) {
+                    if ("RuleRuntimeData".equals(collection)) {
+                        CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
+                        postgresRepository.saveOrUpdateRuleRuntimeData(caseDocumentDO);
+                    } else if (!"Entity".equals(collection)) {
+                        postgresRepository.save(postgresEntity);
+                    }
+                }
             }catch (Exception e){
-                Map<String,Object> mp = new HashMap<>();
-                mp.put(e.getMessage(),document);
-                failedDocs.add(mp);
-                log.error(e.getMessage());
+                failedDocs.add(document);
+                log.error("Unable to save the document [{}] for collection [{}] due to exception [{}]",document,collection,e.getMessage(),e);
             }
         }
     }
 
-    private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration, List<Map<String,Object>> failedDocs) {
+    private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration, List<Object>failedDocs) {
         Object lastDocument = fetchedDocuments.get(fetchedDocuments.size() - 1);
         try {
             String processedId = extractField(lastDocument, "id");
-            Date processedDate = extractDateField(lastDocument);
+            Date processedDate = extractDateField(lastDocument,collection);
 
             if (dataMigration != null) {
                 updateDataMigration(processedId, processedDate,failedDocs, dataMigration);
@@ -113,14 +118,14 @@ public class DataMigrationService {
         }
     }
 
-    private void updateDataMigration(String processedId, Date processedDate, List<Map<String,Object>> failedDocs, DataMigration existingDataMigration) {
+    private void updateDataMigration(String processedId, Date processedDate, List<Object> failedDocs, DataMigration existingDataMigration) {
         existingDataMigration.setLastProcessedId(processedId);
         existingDataMigration.setLastProcessedDate(processedDate);
         existingDataMigration.getFailedDocs().addAll(failedDocs);
         dataMigrationRepository.save(existingDataMigration);
     }
 
-    private void saveDataMigration(String collection, String processedId,List<Map<String,Object>> failedDocs, Date processedDate) {
+    private void saveDataMigration(String collection, String processedId,List<Object> failedDocs, Date processedDate) {
         DataMigration dataMigration = new DataMigration();
         dataMigration.setCollectionName(collection);
         dataMigration.setLastProcessedId(processedId);
@@ -135,8 +140,8 @@ public class DataMigrationService {
         return (String) field.get(obj);
     }
 
-    private Date extractDateField(Object obj) throws Exception {
-        Optional<Field> dateField = findDateField(obj);
+    private Date extractDateField(Object obj,String collection) throws Exception {
+        Optional<Field> dateField = findDateField(obj,collection);
         if (dateField.isPresent()) {
             Field field = dateField.get();
             field.setAccessible(true);
@@ -145,8 +150,19 @@ public class DataMigrationService {
         return null;
     }
 
-    private Optional<Field> findDateField(Object obj) {
+    private Optional<Field> findDateField(Object obj,String collection) {
         Class<?> clazz = obj.getClass();
+
+        if(collection.equals("Config")||collection.equals("Entity")){
+            Field field = findFieldInHierarchy(clazz, "lastModifiedDate");
+            if (field != null) {
+                field.setAccessible(true);
+                return Optional.of(field);
+            } else {
+                log.warn("lastModified date field not found in class hierarchy: {}", clazz.getName());
+                return Optional.empty();
+            }
+        }
 
         Field field = findFieldInHierarchy(clazz, "createdDate");
         if (field == null) {

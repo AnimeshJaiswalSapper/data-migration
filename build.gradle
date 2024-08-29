@@ -16,12 +16,12 @@ java {
 
 repositories {
 	mavenCentral()
-	if (System.getenv("GIT_TOKEN")) {
+	if (true) {
 		maven {
 			url = uri("https://maven.pkg.github.com/Sapper-Software/unified-framework")
 			credentials {
 				username = "unified-framework"
-				password = System.getenv("GIT_TOKEN")
+				password = "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"
 			}
 		}
 	}

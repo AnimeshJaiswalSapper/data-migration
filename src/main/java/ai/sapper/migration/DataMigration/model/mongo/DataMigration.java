@@ -21,6 +21,6 @@ public class DataMigration {
     private String collectionName;
     private String lastProcessedId;
     private Date lastProcessedDate;
-    private List<Map<String,Object>> failedDocs;
+    private List<Object> failedDocs;
 
 }
