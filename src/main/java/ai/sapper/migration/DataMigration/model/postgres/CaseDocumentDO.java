@@ -53,6 +53,10 @@ public class CaseDocumentDO {
                 if(mongoCaseDoc.getType()!=null){
                         type = SpDocumentType.fromCaseType(mongoCaseDoc.getType());
                 }
+                if(mongoCaseDoc.getCaseDocument().getDocuments()==null || mongoCaseDoc.getCaseDocument().getDocuments().isEmpty()){
+                    log.error("The case document doesn't contains any document for caseID : [{}]", mongoCaseDoc.getCaseId());
+                    return null;
+                }
                 CaseDocumentDO caseDoc = CaseDocumentDO.builder()
                         .id(new CaseDataId(mongoCaseDoc.getCaseId(),type))
                         .createdTime(mongoCaseDoc.getCreatedDate().getTime())

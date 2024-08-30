@@ -70,9 +70,6 @@ public class Case implements Serializable {
     @Column(name = "reject_reason", length = 512)
     private String rejectReason;
 
-    @Column(name = "case_file_path")
-    private String filePath;
-
     @Column(name = "auto_approval")
     private boolean autoApproval;
 
@@ -122,7 +119,6 @@ public class Case implements Serializable {
                         .channel(mongoCase.getChannel())
                         .submitDate(mongoCase.getSubmitDate() != null ? mongoCase.getSubmitDate().getTime() : null)
                         .rejectReason(mongoCase.getRejectReason())
-                        .filePath(mongoCase.getFilePath())
                         .autoApproval(mongoCase.isAutoApproval())
                         .parentCaseId(mongoCase.getParentCaseId())
                         .createdBy(mongoCase.getCreatedBy())

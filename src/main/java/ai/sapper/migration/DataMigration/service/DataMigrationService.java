@@ -3,6 +3,7 @@ package ai.sapper.migration.DataMigration.service;
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
 import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
+import ai.sapper.migration.DataMigration.model.postgres.Case;
 import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
@@ -91,6 +92,9 @@ public class DataMigrationService {
                     if ("RuleRuntimeData".equals(collection)) {
                         CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
                         postgresRepository.saveOrUpdateRuleRuntimeData(caseDocumentDO);
+                    }else if("CaseDocumentDO".equals(collection)){
+                        CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
+                        postgresRepository.saveOrUpdateCaseDocumentDO(caseDocumentDO);
                     } else if (!"Entity".equals(collection)) {
                         postgresRepository.save(postgresEntity);
                     }

@@ -33,7 +33,7 @@ public class Entity extends BaseEntity {
     private PostgresRepository postgresRepository;
 
     public Config checkConfig() {
-        Config config = postgresRepository.findConfigByType(ConfigType.USER_PERSONA);
+        Config config = postgresRepository.findConfigByType(ConfigType.COMPANY);
 
         if (config != null) {
             return config;
@@ -53,7 +53,7 @@ public class Entity extends BaseEntity {
                         entity = Config.builder()
                             .id(UUID.randomUUID().toString())
                             .status(true)
-                            .type(ConfigType.USER_PERSONA)
+                            .type(ConfigType.COMPANY)
                             .level(ConfigLevel.SYSTEM)
                             .userId("CASE_COMPANY")
                             .build();

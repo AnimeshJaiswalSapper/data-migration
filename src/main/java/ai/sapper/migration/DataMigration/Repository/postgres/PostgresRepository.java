@@ -2,6 +2,9 @@ package ai.sapper.migration.DataMigration.Repository.postgres;
 
 
 import ai.sapper.migration.DataMigration.constants.ConfigType;
+import ai.sapper.migration.DataMigration.constants.SpDocumentType;
+import ai.sapper.migration.DataMigration.model.postgres.Case;
+import ai.sapper.migration.DataMigration.model.postgres.CaseDataId;
 import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
 import ai.sapper.migration.DataMigration.model.postgres.Config;
 import jakarta.persistence.EntityManager;
@@ -76,4 +79,43 @@ public class PostgresRepository {
             return null;
         }
     }
+
+    @Transactional
+    public void saveOrUpdateCaseDocumentDO(CaseDocumentDO caseDocumentDO) {
+        try {
+            CaseDocumentDO existingData = findCaseDocumentByIdAndType(caseDocumentDO.getId().getId(),caseDocumentDO.getId().getType());
+
+            if (existingData != null) {
+                if (caseDocumentDO.getCreatedTime() > existingData.getCreatedTime()) {
+                    existingData.setVersion(caseDocumentDO.getVersion());
+                    existingData.setData(caseDocumentDO.getData());
+                    existingData.setCreatedTime(caseDocumentDO.getCreatedTime());
+                    existingData.setUpdatedTime(caseDocumentDO.getUpdatedTime());
+                    existingData.setCreatedBy(caseDocumentDO.getCreatedBy());
+                    existingData.setLastModifiedBy(caseDocumentDO.getLastModifiedBy());
+                    entityManager.merge(existingData);
+                }
+            } else {
+                entityManager.persist(caseDocumentDO);
+            }
+        } catch (Exception e) {
+            log.error("Error saving or updating CaseDocumentDO: {}", e.getMessage(), e);
+            throw new RuntimeException("Save or update failed", e);
+        }
+    }
+
+    @Transactional
+    public CaseDocumentDO findCaseDocumentByIdAndType(String id, String type) {
+        try {
+            String query = "SELECT c FROM CaseDocumentDO c WHERE c.id.id = :id AND c.id.type = :type";
+            return entityManager.createQuery(query, CaseDocumentDO.class)
+                    .setParameter("id", id)
+                    .setParameter("type", type)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+
 }

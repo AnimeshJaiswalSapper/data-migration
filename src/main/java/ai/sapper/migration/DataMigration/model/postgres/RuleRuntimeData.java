@@ -47,6 +47,10 @@ public class RuleRuntimeData {
     public CaseDocumentDO convert(Object mongoDocument) throws JsonProcessingException {
         try {
             if (mongoDocument instanceof ai.sapper.migration.DataMigration.model.mongo.RuleRuntimeData mongoConfig) {
+                if(mongoConfig.getData().isEmpty()){
+                    log.error("The following rule output doesn't contains any data for caseID : [{}]", mongoConfig.getCaseDocumentId());
+                    return null;
+                }
                 CaseDocumentDO ruleRuntimeData = CaseDocumentDO.builder()
                         .id(new CaseDataId(mongoConfig.getCaseDocumentId(), SpDocumentType.QaCheckOutput))
                         .createdBy(mongoConfig.getCreatedBy())
