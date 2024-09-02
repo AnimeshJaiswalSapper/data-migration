@@ -16,10 +16,13 @@ public class PrimaryMongoConfig extends AbstractMongoClientConfiguration {
     @Value("${spring.data.mongodb.uri.primary}")
     private String primaryUri;
 
+    @Value("${primary.database}")
+    private String database;
+
 
     @Override
     protected String getDatabaseName() {
-        return "spreading";
+        return database;
     }
 
     @Bean

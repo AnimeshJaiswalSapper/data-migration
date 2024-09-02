@@ -16,10 +16,13 @@ public class SecondaryMongoConfig extends AbstractMongoClientConfiguration {
     @Value("${spring.data.mongodb.uri.secondary}")
     private String secondaryUri;
 
+    @Value("${secondary.database}")
+    private String database;
+
 
     @Override
     protected String getDatabaseName() {
-        return "ids";
+        return database;
     }
 
     @Bean
