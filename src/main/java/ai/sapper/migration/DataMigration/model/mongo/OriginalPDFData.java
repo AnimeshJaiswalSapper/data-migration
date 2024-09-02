@@ -1,6 +1,8 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
 import ai.sapper.migration.DataMigration.service.mongo.ReadService;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.*;
 
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
+
 @Document("OriginalPDFData")
 @ToString
 @Component
@@ -21,9 +25,9 @@ import java.util.*;
         @CompoundIndex(name = "runId", def = "{'runId':1}", unique = false),
         @CompoundIndex(name = "projectId_documentId", def = "{'projectId':1,'documentId':1}", unique = false),
         @CompoundIndex(name = "documentId_pageNo", def = "{'pageNo':1,'documentId':1}", unique = true)})
+@Getter
+@Setter
 public class OriginalPDFData implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     @Id
     private String _id;
@@ -82,12 +86,22 @@ public class OriginalPDFData implements Serializable {
     private Map<String, Set<String>> projectWiseTemplateMap = new LinkedHashMap<String, Set<String>>();
     private byte[] projectWiseTemplatByte;
 
+
     @Autowired
     ReadService readService;
 
     public List<OriginalPDFData> read(Date lastProcessedDate, String lastProcessedId) {
         return readService.findDocumentsSortedIds(OriginalPDFData.class,
                 "OriginalPDFData"
+        );
+    }
+
+    public List<OriginalPDFData> readByCaseId(String caseId) {
+        return readService.findDocuments(OriginalPDFData.class,
+                "OriginalPDFData",
+                PAGE,
+                caseId,
+                RUN_ID
         );
     }
 }

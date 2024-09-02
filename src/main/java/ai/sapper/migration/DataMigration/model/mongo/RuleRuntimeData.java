@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static ai.sapper.migration.DataMigration.constants.Collections.CREATED_DATE;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
 @Document(collection = "rules.output.runtime")
@@ -51,5 +51,21 @@ public class RuleRuntimeData extends BaseEntity {
                 lastProcessedId,
                 true
         );
+    }
+
+    public RuleRuntimeData readByCaseId(String caseId){
+        List<RuleRuntimeData> ruleRuntimeDataList = readService.findDocuments(RuleRuntimeData.class,
+                "rules.output.runtime",
+                VERSION,
+                caseId,
+                null,
+                CASE_DOCUMENT_ID,
+                null
+                );
+
+        if(!ruleRuntimeDataList.isEmpty())
+            return ruleRuntimeDataList.get(ruleRuntimeDataList.size()-1);
+
+        return null;
     }
 }

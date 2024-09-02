@@ -38,6 +38,7 @@ public class Case implements Serializable {
     @Column(name = "company_id")
     private String entity;
 
+
     @Column(name = "coa_id")
     private String coaId;
 

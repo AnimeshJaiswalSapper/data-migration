@@ -26,9 +26,18 @@ public class Collections {
 
     public static final String CREATED_AT = "createdAt";
 
+    public static final String VERSION = "version";
+
+    public static final String PAGE = "pageNo";
+
     public static final String LAST_MODIFIED_DATE = "lastModifiedDate";
     public static final String READ = "read";
 
     public static final String ID = "id";
 
+    public static final String CASE_ID = "caseId";
+
+    public static final String RUN_ID = "runId";
+    public static final String CASE_DOCUMENT_ID = "caseDocumentId";
+    public static final String CASE_TYPE = "caseType";
 }

@@ -15,6 +15,7 @@ public enum SpDocumentType {
     EncryptedOutputFile,
 
     CASE,
+    CaseZIP,
     UDPLatest,
 
     ITR,

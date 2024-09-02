@@ -19,7 +19,6 @@ public class S3Migration {
     private String collectionName;
     private String lastProcessedId;
     private Date lastProcessedDate;
-    private List<Object> failedDocs;
-
+    private List<String> failedDocs;
 }
 

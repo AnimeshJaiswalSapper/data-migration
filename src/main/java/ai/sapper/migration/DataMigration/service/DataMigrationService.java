@@ -3,19 +3,19 @@ package ai.sapper.migration.DataMigration.service;
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
 import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
+import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
+import ai.sapper.migration.DataMigration.s3migration.service.S3migrationService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -38,10 +38,22 @@ public class DataMigrationService {
     @Autowired
     private DocumentService documentService;
 
+    @Autowired
+    private S3migrationService s3migrationService;
+
+    @Value("${db.migration:false}")
+    private Boolean dbMigration;
+
+    @Value("${s3.migration:true}")
+    private Boolean s3migration;
+
     @PostConstruct
     public void start() {
         log.info("---------STARTED DATA MIGRATION------");
-        MODELS.forEach(this::processModel);
+        if (dbMigration)
+            MODELS.forEach(this::processModel);
+        if (s3migration)
+            s3migrationService.s3migration();
     }
 
     private void processModel(String collection) {
@@ -64,9 +76,9 @@ public class DataMigrationService {
             }
 
             List<Object> failedDocs = new ArrayList<>();
-            documentService.saveDocuments(postgresModelObj, fetchedDocuments, failedDocs, collection);
+            documentService.saveDocuments(postgresModelObj, fetchedDocuments,failedDocs,collection);
 
-            updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration, failedDocs);
+            updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration,failedDocs);
         } catch (Exception e) {
             log.error("Error processing model {}: {}", collection, e.getMessage(), e);
         }

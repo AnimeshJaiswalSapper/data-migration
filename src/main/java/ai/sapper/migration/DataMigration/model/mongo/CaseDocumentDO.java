@@ -1,12 +1,13 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import ai.sapper.migration.DataMigration.common.mongo.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.CaseType;
+import ai.sapper.migration.DataMigration.service.mongo.ReadService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.unifiedframework.model.block.CaseDocument;
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -18,6 +19,8 @@ import java.util.List;
 
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
+import static ai.sapper.migration.DataMigration.constants.Collections.CREATED_DATE;
+
 
 @Document("case_document")
 @CompoundIndexes({@CompoundIndex(name = "caseId_type", def = "{'caseId':1, 'type':1}", unique = true)})
@@ -28,14 +31,13 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @ToString(callSuper = true)
 public class CaseDocumentDO extends BaseEntity {
 
+    @Autowired
+    @JsonIgnore
+    ReadService readService;
     private String id;
     private CaseDocument caseDocument;
     private String caseId;
     private CaseType type;
-
-    @Autowired
-    @JsonIgnore
-    ReadService readService;
 
     public List<CaseDocumentDO> read(Date lastProcessedDate, String lastProcessedId) {
         return readService.findDocumentsSorted(CaseDocumentDO.class,

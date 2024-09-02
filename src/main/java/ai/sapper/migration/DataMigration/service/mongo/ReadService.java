@@ -29,7 +29,7 @@ public class ReadService {
     public <T> List<T> findDocumentsSorted(Class<T> modelClass, String collectionName, String sortByField,
                                            Date lastProcessedDate, String lastProcessedId, Boolean isDate) {
         Query query = new Query();
-        query.with(Sort.by(Sort.Direction.ASC, sortByField));
+        query.with(Sort.by(Sort.Direction.DESC, sortByField));
 
         if (isDate && lastProcessedDate != null) {
             query.addCriteria(Criteria.where(sortByField).gt(lastProcessedDate));
@@ -44,12 +44,37 @@ public class ReadService {
         return mongoTemplate.find(query, modelClass, collectionName);
     }
 
+    public <T> List<T> findDocuments(Class<T> modelClass, String collectionName, String sortByField, String caseId, String caseType
+            , String filter1, String filter2) {
+
+        Query query = new Query();
+        query.with(Sort.by(Sort.Direction.ASC, sortByField));
+
+        if (caseType != null)
+            query.addCriteria(Criteria.where(filter1).is(caseId).and(filter2).is(caseType));
+        else
+            query.addCriteria(Criteria.where(filter1).is(caseId));
+
+        return mongoTemplate.find(query, modelClass, collectionName);
+    }
+
     public <T> List<T> findDocumentsSortedIds(Class<T> modelClass, String collectionName) {
         Query query = new Query();
 
         if (batch > 0) {
             query.limit(batch);
         }
+
+        return secondaryMongoTemplate.find(query, modelClass, collectionName);
+    }
+
+    public <T> List<T> findDocuments(Class<T> modelClass, String collectionName, String sortByField, String caseId
+            , String filter1) {
+
+        Query query = new Query();
+        query.with(Sort.by(Sort.Direction.ASC, sortByField));
+
+        query.addCriteria(Criteria.where(filter1).is(caseId));
 
         return secondaryMongoTemplate.find(query, modelClass, collectionName);
     }
