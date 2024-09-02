@@ -79,7 +79,7 @@ public class Entity extends BaseEntity {
 
                     dataList.add(newMetadata);
 
-                    postgresRepository.updateConfig(entity);
+                    postgresRepository.update(entity);
 
                 }
                 return entity;

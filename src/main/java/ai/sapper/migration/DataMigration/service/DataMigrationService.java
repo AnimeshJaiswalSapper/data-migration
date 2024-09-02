@@ -3,14 +3,12 @@ package ai.sapper.migration.DataMigration.service;
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
 import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
-import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,7 +21,8 @@ import java.util.Optional;
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> MODELS = List.of("AuditEntity","AuditSnapshot","AuditSnapshotOriginal","Case","CaseDocumentDO","COA","COALabel","Config","Entity","SapperRule","Status","RuleRuntimeData");
+    private static final List<String> MODELS = List.of("AuditEntity","AuditSnapshot","AuditSnapshotOriginal","Case","CaseMerge","CaseDocumentDO","COA","COALabel","Config","Entity","SapperRule","Status","RuleRuntimeData");
+//    private static final List<String> MODELS = List.of("CaseMerge");
 
     @Value("${mongo.class.path}")
     private String mongoModelClassPath;
@@ -87,39 +86,6 @@ public class DataMigrationService {
     private List<Object> fetchDocuments(Object mongoModelObj, Date lastProcessedDate, String lastProcessedId) throws Exception {
         Method readMethod = mongoModelObj.getClass().getMethod("read", Date.class, String.class);
         return (List<Object>) readMethod.invoke(mongoModelObj, lastProcessedDate, lastProcessedId);
-    }
-
-
-    @Transactional(rollbackFor = Exception.class)
-    public void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments,List<Object> failedDocs,String collection) throws Exception {
-        Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
-        boolean hasFailure = false;
-        for (Object document : fetchedDocuments) {
-            try{
-                Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
-                if (postgresEntity != null) {
-                    if ("RuleRuntimeData".equals(collection)) {
-                        CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
-                        postgresRepository.saveOrUpdateRuleRuntimeData(caseDocumentDO);
-                    }else if("CaseDocumentDO".equals(collection)){
-                        CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
-                        postgresRepository.saveOrUpdateCaseDocumentDO(caseDocumentDO);
-                    } else if (!"Entity".equals(collection)) {
-                        postgresRepository.save(postgresEntity);
-                    }
-                }
-            }catch (Exception e){
-                failedDocs.add(document);
-                log.error("Unable to save the document [{}] for collection [{}] due to exception [{}]",document,collection,e.getMessage(),e);
-                if (!isSkip) {
-                    hasFailure = true;
-                    break;
-                }
-            }
-        }
-        if (!isSkip && hasFailure) {
-            throw new RuntimeException("Transaction failed and was rolled back due to a save error.");
-        }
     }
 
     private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration, List<Object>failedDocs) {

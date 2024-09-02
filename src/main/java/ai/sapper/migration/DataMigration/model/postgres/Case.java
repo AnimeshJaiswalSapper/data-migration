@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -59,6 +60,9 @@ public class Case implements Serializable {
 
     @Column(name = "type")
     private String type;
+
+    @Column(name = "merge_case_ids")
+    private List<String> mergedCaseIds;
 
     @Column(name = "input_source")
     private String channel;

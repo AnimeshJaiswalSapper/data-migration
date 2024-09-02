@@ -2,6 +2,7 @@ package ai.sapper.migration.DataMigration.service;
 
 import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
 import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
+import ai.sapper.migration.DataMigration.model.postgres.CaseMerge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,6 @@ public class DocumentService {
     @Transactional(rollbackFor = Exception.class)
     public void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments, List<Object> failedDocs, String collection) throws Exception {
         Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
-        boolean hasFailure = false;
         for (Object document : fetchedDocuments) {
             try{
                 Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
@@ -35,21 +35,20 @@ public class DocumentService {
                     }else if("CaseDocumentDO".equals(collection)){
                         CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
                         postgresRepository.saveOrUpdateCaseDocumentDO(caseDocumentDO);
-                    } else if (!"Entity".equals(collection)) {
+                    } else if("CaseMerge".equals(collection)){
+                        CaseMerge caseMerge = (CaseMerge) postgresEntity;
+                        postgresRepository.saveOrUpdateCaseMerge(caseMerge);
+                    }else if (!"Entity".equals(collection)) {
                         postgresRepository.save(postgresEntity);
                     }
                 }
             }catch (Exception e){
                 failedDocs.add(document);
-                log.error("Unable to save the document [{}] for collection [{}] due to exception [{}]",document,collection,e.getMessage(),e);
+                log.error("Unable to save the document [{}] for collection [{}] due to exception [{}]", document, collection, e.getMessage(), e);
                 if (!isSkip) {
-                    hasFailure = true;
-                    break;
+                    throw new RuntimeException("Transaction failed and was rolled back due to a save error.", e);
                 }
             }
-        }
-        if (!isSkip && hasFailure) {
-            throw new RuntimeException("Transaction failed and was rolled back due to a save error.");
         }
     }
 

@@ -20,6 +20,7 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(callSuper = true)
 @Component
+@Getter
 public class CaseMerge extends BaseEntity {
     @Id
     @Indexed(unique = true)

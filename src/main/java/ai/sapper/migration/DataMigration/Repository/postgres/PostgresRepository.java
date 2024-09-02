@@ -2,13 +2,18 @@ package ai.sapper.migration.DataMigration.Repository.postgres;
 
 
 import ai.sapper.migration.DataMigration.constants.ConfigType;
+import ai.sapper.migration.DataMigration.model.postgres.Case;
 import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
+import ai.sapper.migration.DataMigration.model.postgres.CaseMerge;
 import ai.sapper.migration.DataMigration.model.postgres.Config;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -36,7 +41,7 @@ public class PostgresRepository {
     }
 
 
-    public void updateConfig(Object object) {
+    public void update(Object object) {
         entityManager.merge(object);
     }
 
@@ -53,10 +58,10 @@ public class PostgresRepository {
                     existingData.setData(caseDocumentDO.getData());
                     existingData.setCreatedTime(caseDocumentDO.getCreatedTime());
                     existingData.setUpdatedTime(caseDocumentDO.getUpdatedTime());
-                    entityManager.merge(existingData);
+                    update(existingData);
                 }
             } else {
-                entityManager.persist(caseDocumentDO);
+                save(caseDocumentDO);
             }
         } catch (Exception e) {
             log.error("Error saving or updating RuleRuntimeData: {}", e.getMessage(), e);
@@ -78,10 +83,10 @@ public class PostgresRepository {
                     existingData.setUpdatedTime(caseDocumentDO.getUpdatedTime());
                     existingData.setCreatedBy(caseDocumentDO.getCreatedBy());
                     existingData.setLastModifiedBy(caseDocumentDO.getLastModifiedBy());
-                    entityManager.merge(existingData);
+                    update(existingData);
                 }
             } else {
-                entityManager.persist(caseDocumentDO);
+                save(caseDocumentDO);
             }
         } catch (Exception e) {
             log.error("Error saving or updating CaseDocumentDO: {}", e.getMessage(), e);
@@ -102,5 +107,39 @@ public class PostgresRepository {
         }
     }
 
+    public void saveOrUpdateCaseMerge(CaseMerge caseMerge){
+        try{
+            String id = caseMerge.getOldCaseId();
+            Case caseObj = findCaseById(id);
+            if(caseObj == null){
+                log.error("Case not found for merging. Old Case ID: [{}], Merge Case ID: [{}]",caseMerge.getOldCaseId(),caseMerge.getMergeCaseId());
+                return;
+            }
+            if(caseObj.getMergedCaseIds()!=null){
+                List<String> mergeCaseIdList = caseObj.getMergedCaseIds();
+                mergeCaseIdList.add(caseMerge.getMergeCaseId());
+                update(caseObj);
+            }else{
+                List<String> mergeCaseIdList = new ArrayList<>();
+                mergeCaseIdList.add(caseMerge.getMergeCaseId());
+                caseObj.setMergedCaseIds(mergeCaseIdList);
+                update(caseObj);
+            }
+        }catch(Exception e){
+            log.error("Error saving or updating CaseMerge: {}", e.getMessage(), e);
+            throw new RuntimeException("Save or update failed", e);
+        }
+    }
+
+    public Case findCaseById(String id) {
+        try {
+            String query = "SELECT c FROM Case c WHERE c.id = :id";
+            return entityManager.createQuery(query, Case.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
 }
