@@ -3,19 +3,21 @@ package ai.sapper.migration.DataMigration.service;
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
 import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
-import ai.sapper.migration.DataMigration.model.postgres.Case;
 import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
 import jakarta.annotation.PostConstruct;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -29,6 +31,9 @@ public class DataMigrationService {
     @Value("${postgres.class.path}")
     private String postgresModelClassPath;
 
+    @Value("${isSkip}")
+    private boolean isSkip;
+
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -37,6 +42,9 @@ public class DataMigrationService {
 
     @Autowired
     private PostgresRepository postgresRepository;
+
+    @Autowired
+    private DocumentService documentService;
 
     @PostConstruct
     public void start() {
@@ -64,7 +72,7 @@ public class DataMigrationService {
             }
 
             List<Object> failedDocs = new ArrayList<>();
-            saveDocuments(postgresModelObj, fetchedDocuments,failedDocs,collection);
+            documentService.saveDocuments(postgresModelObj, fetchedDocuments,failedDocs,collection);
 
             updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration,failedDocs);
         } catch (Exception e) {
@@ -81,10 +89,11 @@ public class DataMigrationService {
         return (List<Object>) readMethod.invoke(mongoModelObj, lastProcessedDate, lastProcessedId);
     }
 
-    @Transactional
-    private void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments,List<Object> failedDocs,String collection) throws Exception {
-        Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
 
+    @Transactional(rollbackFor = Exception.class)
+    public void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments,List<Object> failedDocs,String collection) throws Exception {
+        Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
+        boolean hasFailure = false;
         for (Object document : fetchedDocuments) {
             try{
                 Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
@@ -102,7 +111,14 @@ public class DataMigrationService {
             }catch (Exception e){
                 failedDocs.add(document);
                 log.error("Unable to save the document [{}] for collection [{}] due to exception [{}]",document,collection,e.getMessage(),e);
+                if (!isSkip) {
+                    hasFailure = true;
+                    break;
+                }
             }
+        }
+        if (!isSkip && hasFailure) {
+            throw new RuntimeException("Transaction failed and was rolled back due to a save error.");
         }
     }
 

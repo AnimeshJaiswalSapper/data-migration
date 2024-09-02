@@ -8,12 +8,14 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.*;
 
 @Document("OriginalPDFData")
 @ToString
+@Component
 @CompoundIndexes({ @CompoundIndex(name = "projectId", def = "{'projectId':1}", unique = false),
         @CompoundIndex(name = "documentId", def = "{'documentId':1}", unique = false),
         @CompoundIndex(name = "runId", def = "{'runId':1}", unique = false),
@@ -84,12 +86,8 @@ public class OriginalPDFData implements Serializable {
     ReadService readService;
 
     public List<OriginalPDFData> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(OriginalPDFData.class,
-                "OriginalPDFData",
-                "_id",
-                lastProcessedDate,
-                lastProcessedId,
-                false
+        return  readService.findDocumentsSortedIds(OriginalPDFData.class,
+                "OriginalPDFData"
         );
     }
 }

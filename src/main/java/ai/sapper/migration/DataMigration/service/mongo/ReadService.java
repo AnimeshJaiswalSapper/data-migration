@@ -1,6 +1,7 @@
 package ai.sapper.migration.DataMigration.service.mongo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -15,7 +16,12 @@ import java.util.List;
 public class ReadService {
 
     @Autowired
+    @Qualifier("primaryMongoTemplate")
     private  MongoTemplate mongoTemplate;
+
+    @Autowired
+    @Qualifier("secondaryMongoTemplate")
+    private  MongoTemplate secondaryMongoTemplate;
 
     @Value("${batch}")
     int batch;
@@ -36,6 +42,16 @@ public class ReadService {
         }
 
         return mongoTemplate.find(query, modelClass, collectionName);
+    }
+
+    public <T> List<T> findDocumentsSortedIds(Class<T> modelClass, String collectionName) {
+        Query query = new Query();
+
+        if (batch > 0) {
+            query.limit(batch);
+        }
+
+        return secondaryMongoTemplate.find(query, modelClass, collectionName);
     }
 
 }

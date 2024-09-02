@@ -2,15 +2,11 @@ package ai.sapper.migration.DataMigration.Repository.postgres;
 
 
 import ai.sapper.migration.DataMigration.constants.ConfigType;
-import ai.sapper.migration.DataMigration.constants.SpDocumentType;
-import ai.sapper.migration.DataMigration.model.postgres.Case;
-import ai.sapper.migration.DataMigration.model.postgres.CaseDataId;
 import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
 import ai.sapper.migration.DataMigration.model.postgres.Config;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +17,12 @@ public class PostgresRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Transactional
+
     public void save(Object object){
         entityManager.persist(object);
     }
 
-    @Transactional
+
     public Config findConfigByType(ConfigType type) {
         try {
             String query = "SELECT c FROM Config c WHERE c.type = :type AND c.userId = :userId";
@@ -39,16 +35,17 @@ public class PostgresRepository {
         }
     }
 
-    @Transactional
+
     public void updateConfig(Object object) {
         entityManager.merge(object);
     }
 
-    @Transactional
-    public void saveOrUpdateRuleRuntimeData(CaseDocumentDO caseDocumentDO) {
+
+
+    public void saveOrUpdateRuleRuntimeData(CaseDocumentDO caseDocumentDO) throws Exception {
         try {
 
-            CaseDocumentDO existingData = findCaseDocumentById(caseDocumentDO.getId().getId());
+            CaseDocumentDO existingData = findCaseDocumentByIdAndType(caseDocumentDO.getId().getId(),caseDocumentDO.getId().getType());
 
             if (existingData != null) {
                 if (caseDocumentDO.getVersion() > existingData.getVersion()) {
@@ -67,20 +64,8 @@ public class PostgresRepository {
         }
     }
 
-    @Transactional
-    public CaseDocumentDO findCaseDocumentById(String id) {
-        try {
-            String query = "SELECT c FROM CaseDocumentDO c WHERE c.id.id = :id AND c.id.type = :type";
-            return entityManager.createQuery(query, CaseDocumentDO.class)
-                    .setParameter("id", id)
-                    .setParameter("type", "QaCheckOutput")
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
 
-    @Transactional
+
     public void saveOrUpdateCaseDocumentDO(CaseDocumentDO caseDocumentDO) {
         try {
             CaseDocumentDO existingData = findCaseDocumentByIdAndType(caseDocumentDO.getId().getId(),caseDocumentDO.getId().getType());
@@ -104,7 +89,7 @@ public class PostgresRepository {
         }
     }
 
-    @Transactional
+
     public CaseDocumentDO findCaseDocumentByIdAndType(String id, String type) {
         try {
             String query = "SELECT c FROM CaseDocumentDO c WHERE c.id.id = :id AND c.id.type = :type";
