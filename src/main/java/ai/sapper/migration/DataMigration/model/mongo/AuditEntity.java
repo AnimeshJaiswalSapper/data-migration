@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 @Document(collection = "audit.entity")
@@ -46,7 +47,7 @@ public class AuditEntity implements Serializable {
     ReadService readService;
 
     public List<AuditEntity> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(AuditEntity.class,
+        return readService.findDocumentsSorted(AuditEntity.class,
                 "audit.entity",
                 CREATED_AT,
                 lastProcessedDate,

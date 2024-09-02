@@ -1,6 +1,5 @@
 package ai.sapper.migration.DataMigration.model.postgres;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

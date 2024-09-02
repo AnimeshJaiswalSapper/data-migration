@@ -1,6 +1,5 @@
 package ai.sapper.migration.DataMigration.model.mongo;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Document("dataMigration")
-public class DataMigration {
+@Document("s3_migration")
+public class S3Migration {
     @Id
     private String id;
     private String collectionName;
@@ -23,3 +22,4 @@ public class DataMigration {
     private List<Object> failedDocs;
 
 }
+

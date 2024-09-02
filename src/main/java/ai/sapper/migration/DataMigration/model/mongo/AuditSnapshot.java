@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
@@ -47,7 +48,7 @@ public class AuditSnapshot implements Serializable {
     ReadService readService;
 
     public List<AuditSnapshot> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(AuditSnapshot.class,
+        return readService.findDocumentsSorted(AuditSnapshot.class,
                 "audit.snapshot",
                 CREATED_AT,
                 lastProcessedDate,

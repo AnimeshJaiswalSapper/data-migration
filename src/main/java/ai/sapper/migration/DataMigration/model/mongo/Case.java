@@ -25,7 +25,6 @@ import java.util.Map;
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
-
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(callSuper = true)
@@ -46,7 +45,7 @@ public class Case extends BaseEntity {
     private CaseType type;
     private String channel;
     private String fileName;
-    private Map<String,?> attributes;
+    private Map<String, ?> attributes;
 
     private Map<String, ?> metadata = new HashMap<>();
     private Date submitDate;
@@ -61,13 +60,13 @@ public class Case extends BaseEntity {
     @JsonIgnore
     ReadService readService;
 
-    public List<Case> read(Date lastProcessedDate,String lastProcessedId) {
-       return  readService.findDocumentsSorted(Case.class,
+    public List<Case> read(Date lastProcessedDate, String lastProcessedId) {
+        return readService.findDocumentsSorted(Case.class,
                 "case",
                 CREATED_DATE,
-               lastProcessedDate,
-               lastProcessedId,
-               true
+                lastProcessedDate,
+                lastProcessedId,
+                true
         );
     }
 }

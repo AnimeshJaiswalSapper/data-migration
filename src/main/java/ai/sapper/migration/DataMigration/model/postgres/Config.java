@@ -2,23 +2,14 @@ package ai.sapper.migration.DataMigration.model.postgres;
 
 import ai.sapper.migration.DataMigration.constants.ConfigLevel;
 import ai.sapper.migration.DataMigration.constants.ConfigType;
-import ai.sapper.migration.DataMigration.constants.Status;
 import ai.sapper.migration.DataMigration.convertor.JsonbConverter;
-import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnTransformer;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Map;
 
 @Getter
@@ -63,7 +54,7 @@ public class Config {
                         .build();
                 return config;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting Config document: {}", e.getMessage(), e);
             throw e;
         }

@@ -83,7 +83,7 @@ public class AuditSnapshot implements Serializable {
 
                 return config;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting Audit Entity document: {}", e.getMessage(), e);
             throw e;
         }

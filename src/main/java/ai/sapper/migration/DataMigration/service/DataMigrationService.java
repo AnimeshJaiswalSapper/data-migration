@@ -21,8 +21,7 @@ import java.util.Optional;
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> MODELS = List.of("AuditEntity","AuditSnapshot","AuditSnapshotOriginal","Case","CaseMerge","CaseDocumentDO","COA","COALabel","Config","Entity","SapperRule","Status","RuleRuntimeData");
-//    private static final List<String> MODELS = List.of("CaseMerge");
+    private static final List<String> MODELS = List.of("AuditEntity", "AuditSnapshot", "AuditSnapshotOriginal", "Case", "CaseMerge", "CaseDocumentDO", "COA", "COALabel", "Config", "Entity", "SapperRule", "Status", "RuleRuntimeData");
 
     @Value("${mongo.class.path}")
     private String mongoModelClassPath;
@@ -71,9 +70,9 @@ public class DataMigrationService {
             }
 
             List<Object> failedDocs = new ArrayList<>();
-            documentService.saveDocuments(postgresModelObj, fetchedDocuments,failedDocs,collection);
+            documentService.saveDocuments(postgresModelObj, fetchedDocuments, failedDocs, collection);
 
-            updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration,failedDocs);
+            updateOrSaveDataMigration(collection, fetchedDocuments, dataMigration, failedDocs);
         } catch (Exception e) {
             log.error("Error processing model {}: {}", collection, e.getMessage(), e);
         }
@@ -88,16 +87,16 @@ public class DataMigrationService {
         return (List<Object>) readMethod.invoke(mongoModelObj, lastProcessedDate, lastProcessedId);
     }
 
-    private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration, List<Object>failedDocs) {
+    private void updateOrSaveDataMigration(String collection, List<Object> fetchedDocuments, DataMigration dataMigration, List<Object> failedDocs) {
         Object lastDocument = fetchedDocuments.get(fetchedDocuments.size() - 1);
         try {
             String processedId = extractField(lastDocument, "id");
-            Date processedDate = extractDateField(lastDocument,collection);
+            Date processedDate = extractDateField(lastDocument, collection);
 
             if (dataMigration != null) {
-                updateDataMigration(processedId, processedDate,failedDocs, dataMigration);
+                updateDataMigration(processedId, processedDate, failedDocs, dataMigration);
             } else {
-                saveDataMigration(collection, processedId,failedDocs, processedDate);
+                saveDataMigration(collection, processedId, failedDocs, processedDate);
             }
         } catch (Exception e) {
             log.error("Error updating/saving DataMigration for collection {}: {}", collection, e.getMessage(), e);
@@ -111,7 +110,7 @@ public class DataMigrationService {
         dataMigrationRepository.save(existingDataMigration);
     }
 
-    private void saveDataMigration(String collection, String processedId,List<Object> failedDocs, Date processedDate) {
+    private void saveDataMigration(String collection, String processedId, List<Object> failedDocs, Date processedDate) {
         DataMigration dataMigration = new DataMigration();
         dataMigration.setCollectionName(collection);
         dataMigration.setLastProcessedId(processedId);
@@ -126,8 +125,8 @@ public class DataMigrationService {
         return (String) field.get(obj);
     }
 
-    private Date extractDateField(Object obj,String collection) throws Exception {
-        Optional<Field> dateField = findDateField(obj,collection);
+    private Date extractDateField(Object obj, String collection) throws Exception {
+        Optional<Field> dateField = findDateField(obj, collection);
         if (dateField.isPresent()) {
             Field field = dateField.get();
             field.setAccessible(true);
@@ -136,10 +135,10 @@ public class DataMigrationService {
         return null;
     }
 
-    private Optional<Field> findDateField(Object obj,String collection) {
+    private Optional<Field> findDateField(Object obj, String collection) {
         Class<?> clazz = obj.getClass();
 
-        if(collection.equals("Config")||collection.equals("Entity")){
+        if (collection.equals("Config") || collection.equals("Entity")) {
             Field field = findFieldInHierarchy(clazz, "lastModifiedDate");
             if (field != null) {
                 field.setAccessible(true);

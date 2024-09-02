@@ -3,12 +3,10 @@ package ai.sapper.migration.DataMigration.model.postgres;
 import ai.sapper.migration.DataMigration.common.postgres.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.Status;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -58,7 +56,7 @@ public class COA extends BaseEntity {
 
                 return coa;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting COA document: {}", e.getMessage(), e);
             throw e;
         }

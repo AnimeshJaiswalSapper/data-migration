@@ -26,23 +26,23 @@ public class DocumentService {
     public void saveDocuments(Object postgresModelObj, List<Object> fetchedDocuments, List<Object> failedDocs, String collection) throws Exception {
         Method convertMethod = postgresModelObj.getClass().getMethod("convert", Object.class);
         for (Object document : fetchedDocuments) {
-            try{
+            try {
                 Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
                 if (postgresEntity != null) {
                     if ("RuleRuntimeData".equals(collection)) {
                         CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
                         postgresRepository.saveOrUpdateRuleRuntimeData(caseDocumentDO);
-                    }else if("CaseDocumentDO".equals(collection)){
+                    } else if ("CaseDocumentDO".equals(collection)) {
                         CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
                         postgresRepository.saveOrUpdateCaseDocumentDO(caseDocumentDO);
-                    } else if("CaseMerge".equals(collection)){
+                    } else if ("CaseMerge".equals(collection)) {
                         CaseMerge caseMerge = (CaseMerge) postgresEntity;
                         postgresRepository.saveOrUpdateCaseMerge(caseMerge);
-                    }else if (!"Entity".equals(collection)) {
+                    } else if (!"Entity".equals(collection)) {
                         postgresRepository.save(postgresEntity);
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 failedDocs.add(document);
                 log.error("Unable to save the document [{}] for collection [{}] due to exception [{}]", document, collection, e.getMessage(), e);
                 if (!isSkip) {

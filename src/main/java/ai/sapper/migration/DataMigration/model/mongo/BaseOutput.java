@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
@@ -26,7 +27,7 @@ public class BaseOutput {
     ReadService readService;
 
     public List<BaseOutput> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(BaseOutput.class,
+        return readService.findDocumentsSorted(BaseOutput.class,
                 "BaseOutput",
                 ID,
                 lastProcessedDate,

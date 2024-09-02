@@ -1,21 +1,25 @@
 package ai.sapper.migration.DataMigration.model.postgres;
 
 import ai.sapper.migration.DataMigration.common.postgres.BaseEntity;
-import ai.sapper.migration.DataMigration.common.postgres.Condition;
 import ai.sapper.migration.DataMigration.constants.Status;
-//import ai.sapper.migration.DataMigration.convertor.ConditionConvertor;
 import ai.sapper.migration.DataMigration.convertor.ConditionConvertor;
 import ai.sapper.migration.DataMigration.convertor.EntityConvertor;
-import jakarta.persistence.*;
 import jakarta.persistence.Entity;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "coa_label")
@@ -76,7 +80,6 @@ public class COALabel extends BaseEntity implements Serializable {
     private String tableName;
 
 
-
     public COALabel convert(Object mongoDocument) {
         try {
             if (mongoDocument instanceof ai.sapper.migration.DataMigration.model.mongo.COALabel mongoCOALabel) {
@@ -107,7 +110,7 @@ public class COALabel extends BaseEntity implements Serializable {
 
                 return coaLabel;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting COA document: {}", e.getMessage(), e);
             throw e;
         }
@@ -121,7 +124,6 @@ public class COALabel extends BaseEntity implements Serializable {
         }
         return null;
     }
-
 
 
 }

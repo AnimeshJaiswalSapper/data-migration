@@ -15,17 +15,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
-
 @Document("case_document")
-@CompoundIndexes({ @CompoundIndex(name = "caseId_type", def = "{'caseId':1, 'type':1}", unique = true)})
+@CompoundIndexes({@CompoundIndex(name = "caseId_type", def = "{'caseId':1, 'type':1}", unique = true)})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Component
 @Data
 @ToString(callSuper = true)
-public class CaseDocumentDO extends BaseEntity{
+public class CaseDocumentDO extends BaseEntity {
 
     private String id;
     private CaseDocument caseDocument;
@@ -36,8 +36,8 @@ public class CaseDocumentDO extends BaseEntity{
     @JsonIgnore
     ReadService readService;
 
-    public List<CaseDocumentDO> read(Date lastProcessedDate,String lastProcessedId) {
-        return  readService.findDocumentsSorted(CaseDocumentDO.class,
+    public List<CaseDocumentDO> read(Date lastProcessedDate, String lastProcessedId) {
+        return readService.findDocumentsSorted(CaseDocumentDO.class,
                 "case_document",
                 CREATED_DATE,
                 lastProcessedDate,

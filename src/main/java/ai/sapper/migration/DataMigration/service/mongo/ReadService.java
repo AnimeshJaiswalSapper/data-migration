@@ -17,11 +17,11 @@ public class ReadService {
 
     @Autowired
     @Qualifier("primaryMongoTemplate")
-    private  MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     @Qualifier("secondaryMongoTemplate")
-    private  MongoTemplate secondaryMongoTemplate;
+    private MongoTemplate secondaryMongoTemplate;
 
     @Value("${batch}")
     int batch;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serial;
 import java.util.Date;
 import java.util.List;
+
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
@@ -41,7 +42,7 @@ public class ActiveLoans {
 
 
     public List<ActiveLoans> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(ActiveLoans.class,
+        return readService.findDocumentsSorted(ActiveLoans.class,
                 "active_loans",
                 ID,
                 lastProcessedDate,

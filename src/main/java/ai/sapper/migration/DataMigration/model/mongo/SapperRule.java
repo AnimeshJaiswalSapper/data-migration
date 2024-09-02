@@ -11,8 +11,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import static ai.sapper.migration.DataMigration.constants.Collections.*;
-
 
 import java.util.Date;
 import java.util.List;
@@ -57,7 +55,7 @@ public class SapperRule extends BaseEntity {
     ReadService readService;
 
     public List<SapperRule> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(SapperRule.class,
+        return readService.findDocumentsSorted(SapperRule.class,
                 "rule",
                 "id",
                 lastProcessedDate,

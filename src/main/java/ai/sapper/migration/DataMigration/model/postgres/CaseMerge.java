@@ -40,5 +40,4 @@ public class CaseMerge extends BaseEntity {
     }
 
 
-
 }

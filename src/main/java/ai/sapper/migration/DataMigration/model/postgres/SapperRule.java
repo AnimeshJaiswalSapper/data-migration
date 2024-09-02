@@ -2,22 +2,19 @@ package ai.sapper.migration.DataMigration.model.postgres;
 
 import ai.sapper.migration.DataMigration.common.postgres.BaseEntity;
 import ai.sapper.migration.DataMigration.convertor.StringListConverter;
-import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * This entity is used for persistence of rules configured by user
- *
  */
 @Getter
 @Setter
@@ -39,7 +36,7 @@ public class SapperRule extends BaseEntity {
     @Column(name = "group_id")
     private String group;
 
-    @Column(name="rule_expression", length = 10000)
+    @Column(name = "rule_expression", length = 10000)
     private String ruleExpression;
 
     @Column(name = "rule_condition", length = 5000)
@@ -73,7 +70,6 @@ public class SapperRule extends BaseEntity {
     private long order;
 
 
-
     public SapperRule convert(Object mongoDocument) {
         try {
             if (mongoDocument instanceof ai.sapper.migration.DataMigration.model.mongo.SapperRule mongoRule) {
@@ -102,7 +98,7 @@ public class SapperRule extends BaseEntity {
 
                 return rule;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting COA document: {}", e.getMessage(), e);
             throw e;
         }

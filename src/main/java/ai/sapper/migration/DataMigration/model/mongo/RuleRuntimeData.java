@@ -37,12 +37,11 @@ public class RuleRuntimeData extends BaseEntity {
     private Map<String, String> metadata;
 
 
-
     @Autowired
     ReadService readService;
 
     public List<RuleRuntimeData> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(RuleRuntimeData.class,
+        return readService.findDocumentsSorted(RuleRuntimeData.class,
                 "rules.output.runtime",
                 CREATED_DATE,
                 lastProcessedDate,

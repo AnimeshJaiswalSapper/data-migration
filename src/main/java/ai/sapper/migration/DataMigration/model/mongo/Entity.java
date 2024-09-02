@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
@@ -32,7 +33,7 @@ public class Entity extends BaseEntity {
     ReadService readService;
 
     public List<Entity> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(Entity.class,
+        return readService.findDocumentsSorted(Entity.class,
                 "entity",
                 LAST_MODIFIED_DATE,
                 lastProcessedDate,

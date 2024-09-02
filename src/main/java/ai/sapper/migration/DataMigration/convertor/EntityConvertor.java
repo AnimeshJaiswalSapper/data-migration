@@ -30,7 +30,8 @@ public class EntityConvertor implements AttributeConverter<List<Object>, String>
             return Collections.emptyList();
         }
         try {
-            return objectMapper.readValue(dbData, new TypeReference<List<Object>>() {});
+            return objectMapper.readValue(dbData, new TypeReference<List<Object>>() {
+            });
         } catch (IOException e) {
             e.printStackTrace();
             return null;

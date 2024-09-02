@@ -1,6 +1,5 @@
 package ai.sapper.migration.DataMigration.convertor;
 
-import ai.sapper.migration.DataMigration.model.postgres.CaseRetention;
 import ai.sapper.migration.DataMigration.model.postgres.CaseTimes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +7,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class CaseTimesConverter implements AttributeConverter<CaseTimes,String>{
+public class CaseTimesConverter implements AttributeConverter<CaseTimes, String> {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override

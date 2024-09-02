@@ -1,29 +1,21 @@
 package ai.sapper.migration.DataMigration.model.postgres;
 
-import ai.sapper.migration.DataMigration.common.postgres.BaseEntity;
-import ai.sapper.migration.DataMigration.common.postgres.ESpIntakeCaseState;
-import ai.sapper.migration.DataMigration.constants.CaseStatus;
 import ai.sapper.migration.DataMigration.constants.CaseType;
 import ai.sapper.migration.DataMigration.convertor.CaseRetentionConverter;
 import ai.sapper.migration.DataMigration.convertor.CaseStatusConverter;
 import ai.sapper.migration.DataMigration.convertor.CaseTimesConverter;
-import ai.sapper.migration.DataMigration.convertor.JsonbConverter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnTransformer;
-import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +96,7 @@ public class Case implements Serializable {
     @ColumnTransformer(read = "retention::TEXT", write = "?::jsonb")
     private CaseRetention caseRetention;
 
-//    private Map<String, Object> attributes = new HashMap<>();
+    //    private Map<String, Object> attributes = new HashMap<>();
     @Embedded
     private CaseAttributes caseAttributes;
 
@@ -132,7 +124,7 @@ public class Case implements Serializable {
                         .build();
 
                 // set attributes
-                if(mongoCase.getAttributes() != null)
+                if (mongoCase.getAttributes() != null)
                     setAttributes(mongoCase.getAttributes(), caseEntity);
 
                 // Extract metadata
@@ -153,7 +145,7 @@ public class Case implements Serializable {
             CaseRetention caseRetention = new CaseRetention();
 
             if (metaData.containsKey("systemProcessTimeStart")) {
-               caseTimes.setSystemProcessTimeStart(convertToMillis(metaData.get("systemProcessTimeStart")));
+                caseTimes.setSystemProcessTimeStart(convertToMillis(metaData.get("systemProcessTimeStart")));
             }
             if (metaData.containsKey("systemProcessTimeEnd")) {
                 caseTimes.setSystemProcessTimeEnd(convertToMillis(metaData.get("systemProcessTimeEnd")));
@@ -183,7 +175,7 @@ public class Case implements Serializable {
                 caseRetention.setFileDeletedAt(convertToMillis(metaData.get("fileDeletedAt")));
             }
 
-            if(metaData.containsKey("fileDeleted")){
+            if (metaData.containsKey("fileDeleted")) {
                 caseRetention.setFileDeleted(Boolean.valueOf((String) metaData.get("fileDeleted")));
             }
 
@@ -268,7 +260,6 @@ public class Case implements Serializable {
             }
 
 
-
             caseEntity.setCaseAttributes(caseAttributes);
 
         } catch (Exception e) {
@@ -277,8 +268,8 @@ public class Case implements Serializable {
         }
     }
 
-    String convertType(CaseType type){
-        if(type != null){
+    String convertType(CaseType type) {
+        if (type != null) {
             return type == CaseType.FINANCIAL_STATEMENT ? "FS" : type.toString();
         }
         return null;

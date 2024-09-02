@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+
 import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 
@@ -30,7 +31,7 @@ public class Status {
     ReadService readService;
 
     public List<Status> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(Status.class,
+        return readService.findDocumentsSorted(Status.class,
                 "status",
                 ID,
                 lastProcessedDate,

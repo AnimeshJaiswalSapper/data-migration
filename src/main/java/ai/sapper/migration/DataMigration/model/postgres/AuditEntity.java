@@ -1,16 +1,12 @@
 package ai.sapper.migration.DataMigration.model.postgres;
 
 import ai.sapper.migration.DataMigration.constants.CaseType;
-import ai.sapper.migration.DataMigration.convertor.JsonbConverter;
-import com.unifiedframework.model.block.CaseDocument;
-import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -86,7 +82,7 @@ public class AuditEntity implements Serializable {
 
                 return config;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting Audit Entity document: {}", e.getMessage(), e);
             throw e;
         }

@@ -33,7 +33,7 @@ public class CaseMerge extends BaseEntity {
     ReadService readService;
 
     public List<CaseMerge> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSorted(CaseMerge.class,
+        return readService.findDocumentsSorted(CaseMerge.class,
                 "caseMerge",
                 CREATED_DATE,
                 lastProcessedDate,

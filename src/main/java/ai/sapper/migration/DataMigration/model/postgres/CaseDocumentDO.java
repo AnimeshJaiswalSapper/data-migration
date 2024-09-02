@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 public class CaseDocumentDO {
     @EmbeddedId
     private CaseDataId id;
-    @Column(name = "extraction_json" , columnDefinition = "jsonb")
+    @Column(name = "extraction_json", columnDefinition = "jsonb")
     @ColumnTransformer(write = "?::jsonb")
     private String data;
     @Column(
@@ -50,15 +50,15 @@ public class CaseDocumentDO {
         try {
             if (mongoDocument instanceof ai.sapper.migration.DataMigration.model.mongo.CaseDocumentDO mongoCaseDoc) {
                 SpDocumentType type = SpDocumentType.UDPJson;
-                if(mongoCaseDoc.getType()!=null){
-                        type = SpDocumentType.fromCaseType(mongoCaseDoc.getType());
+                if (mongoCaseDoc.getType() != null) {
+                    type = SpDocumentType.fromCaseType(mongoCaseDoc.getType());
                 }
-                if(mongoCaseDoc.getCaseDocument().getDocuments()==null || mongoCaseDoc.getCaseDocument().getDocuments().isEmpty()){
+                if (mongoCaseDoc.getCaseDocument().getDocuments() == null || mongoCaseDoc.getCaseDocument().getDocuments().isEmpty()) {
                     log.error("The case document doesn't contains any document for caseID : [{}]", mongoCaseDoc.getCaseId());
                     return null;
                 }
                 CaseDocumentDO caseDoc = CaseDocumentDO.builder()
-                        .id(new CaseDataId(mongoCaseDoc.getCaseId(),type))
+                        .id(new CaseDataId(mongoCaseDoc.getCaseId(), type))
                         .createdTime(mongoCaseDoc.getCreatedDate().getTime())
                         .createdBy(mongoCaseDoc.getCreatedBy())
                         .updatedTime(mongoCaseDoc.getLastModifiedDate().getTime())

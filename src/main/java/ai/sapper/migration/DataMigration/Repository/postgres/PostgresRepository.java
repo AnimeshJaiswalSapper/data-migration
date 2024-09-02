@@ -23,7 +23,7 @@ public class PostgresRepository {
     private EntityManager entityManager;
 
 
-    public void save(Object object){
+    public void save(Object object) {
         entityManager.persist(object);
     }
 
@@ -46,11 +46,10 @@ public class PostgresRepository {
     }
 
 
-
     public void saveOrUpdateRuleRuntimeData(CaseDocumentDO caseDocumentDO) throws Exception {
         try {
 
-            CaseDocumentDO existingData = findCaseDocumentByIdAndType(caseDocumentDO.getId().getId(),caseDocumentDO.getId().getType());
+            CaseDocumentDO existingData = findCaseDocumentByIdAndType(caseDocumentDO.getId().getId(), caseDocumentDO.getId().getType());
 
             if (existingData != null) {
                 if (caseDocumentDO.getVersion() > existingData.getVersion()) {
@@ -70,10 +69,9 @@ public class PostgresRepository {
     }
 
 
-
     public void saveOrUpdateCaseDocumentDO(CaseDocumentDO caseDocumentDO) {
         try {
-            CaseDocumentDO existingData = findCaseDocumentByIdAndType(caseDocumentDO.getId().getId(),caseDocumentDO.getId().getType());
+            CaseDocumentDO existingData = findCaseDocumentByIdAndType(caseDocumentDO.getId().getId(), caseDocumentDO.getId().getType());
 
             if (existingData != null) {
                 if (caseDocumentDO.getCreatedTime() > existingData.getCreatedTime()) {
@@ -107,25 +105,25 @@ public class PostgresRepository {
         }
     }
 
-    public void saveOrUpdateCaseMerge(CaseMerge caseMerge){
-        try{
+    public void saveOrUpdateCaseMerge(CaseMerge caseMerge) {
+        try {
             String id = caseMerge.getOldCaseId();
             Case caseObj = findCaseById(id);
-            if(caseObj == null){
-                log.error("Case not found for merging. Old Case ID: [{}], Merge Case ID: [{}]",caseMerge.getOldCaseId(),caseMerge.getMergeCaseId());
+            if (caseObj == null) {
+                log.error("Case not found for merging. Old Case ID: [{}], Merge Case ID: [{}]", caseMerge.getOldCaseId(), caseMerge.getMergeCaseId());
                 return;
             }
-            if(caseObj.getMergedCaseIds()!=null){
+            if (caseObj.getMergedCaseIds() != null) {
                 List<String> mergeCaseIdList = caseObj.getMergedCaseIds();
                 mergeCaseIdList.add(caseMerge.getMergeCaseId());
                 update(caseObj);
-            }else{
+            } else {
                 List<String> mergeCaseIdList = new ArrayList<>();
                 mergeCaseIdList.add(caseMerge.getMergeCaseId());
                 caseObj.setMergedCaseIds(mergeCaseIdList);
                 update(caseObj);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("Error saving or updating CaseMerge: {}", e.getMessage(), e);
             throw new RuntimeException("Save or update failed", e);
         }

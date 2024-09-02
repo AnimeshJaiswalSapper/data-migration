@@ -47,8 +47,8 @@ public class Entity extends BaseEntity {
             if (mongoDocument instanceof ai.sapper.migration.DataMigration.model.mongo.Entity mongoConfig) {
 
                 Config entity = checkConfig();
-                if(entity == null) {
-                        entity = Config.builder()
+                if (entity == null) {
+                    entity = Config.builder()
                             .id(UUID.randomUUID().toString())
                             .status(true)
                             .type(ConfigType.COMPANY)
@@ -69,12 +69,12 @@ public class Entity extends BaseEntity {
 
                     entity.setMeta(meta);
                     postgresRepository.save(entity);
-                }else{
+                } else {
                     List<Map<String, Object>> dataList = (List<Map<String, Object>>) entity.getMeta().get("data");
 
                     Map<String, Object> newMetadata = Map.of(
-                            "id",mongoConfig.getId(),
-                            "name",mongoConfig.getName()
+                            "id", mongoConfig.getId(),
+                            "name", mongoConfig.getName()
                     );
 
                     dataList.add(newMetadata);
@@ -84,7 +84,7 @@ public class Entity extends BaseEntity {
                 }
                 return entity;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting Entity document: {}", e.getMessage(), e);
             throw e;
         }

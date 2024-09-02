@@ -3,13 +3,8 @@ package ai.sapper.migration.DataMigration.common.postgres;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -19,8 +14,6 @@ import java.time.ZonedDateTime;
 @MappedSuperclass
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-
 
     @Column(name = "created_by")
     private String createdBy;

@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 
 @Configuration
-public class PrimaryMongoConfig  extends AbstractMongoClientConfiguration{
+public class PrimaryMongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.uri.primary}")
     private String primaryUri;

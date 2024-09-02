@@ -16,7 +16,7 @@ import java.util.*;
 @Document("OriginalPDFData")
 @ToString
 @Component
-@CompoundIndexes({ @CompoundIndex(name = "projectId", def = "{'projectId':1}", unique = false),
+@CompoundIndexes({@CompoundIndex(name = "projectId", def = "{'projectId':1}", unique = false),
         @CompoundIndex(name = "documentId", def = "{'documentId':1}", unique = false),
         @CompoundIndex(name = "runId", def = "{'runId':1}", unique = false),
         @CompoundIndex(name = "projectId_documentId", def = "{'projectId':1,'documentId':1}", unique = false),
@@ -86,7 +86,7 @@ public class OriginalPDFData implements Serializable {
     ReadService readService;
 
     public List<OriginalPDFData> read(Date lastProcessedDate, String lastProcessedId) {
-        return  readService.findDocumentsSortedIds(OriginalPDFData.class,
+        return readService.findDocumentsSortedIds(OriginalPDFData.class,
                 "OriginalPDFData"
         );
     }

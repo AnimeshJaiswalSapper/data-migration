@@ -32,7 +32,8 @@ public class ConditionConvertor implements AttributeConverter<Map<String, Object
             return Collections.emptyMap();
         }
         try {
-            return objectMapper.readValue(dbData, new TypeReference<Map<String, Object>>() {});
+            return objectMapper.readValue(dbData, new TypeReference<Map<String, Object>>() {
+            });
         } catch (IOException e) {
             e.printStackTrace();
             return new HashMap<>();

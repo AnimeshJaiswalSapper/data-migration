@@ -2,21 +2,18 @@ package ai.sapper.migration.DataMigration.model.postgres;
 
 import ai.sapper.migration.DataMigration.constants.CaseType;
 import jakarta.persistence.*;
-import jakarta.persistence.Id;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.*;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -95,7 +92,7 @@ public class AuditSnapshotOriginal implements Serializable {
 
                 return config;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error converting Audit Entity document: {}", e.getMessage(), e);
             throw e;
         }
