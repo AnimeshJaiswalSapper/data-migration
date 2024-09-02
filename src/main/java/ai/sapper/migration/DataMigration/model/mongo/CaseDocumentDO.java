@@ -23,7 +23,8 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @CompoundIndexes({@CompoundIndex(name = "caseId_type", def = "{'caseId':1, 'type':1}", unique = true)})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Component
-@Data
+@Getter
+@Setter
 @ToString(callSuper = true)
 public class CaseDocumentDO extends BaseEntity {
 

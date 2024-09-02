@@ -35,9 +35,7 @@ public class Entity extends BaseEntity {
 
         if (config != null) {
             return config;
-
         } else {
-            System.out.println("No Config with type 'COMPANY' found.");
             return null;
         }
     }

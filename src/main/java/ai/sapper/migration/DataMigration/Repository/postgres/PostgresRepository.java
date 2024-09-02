@@ -58,12 +58,13 @@ public class PostgresRepository {
                     existingData.setCreatedTime(caseDocumentDO.getCreatedTime());
                     existingData.setUpdatedTime(caseDocumentDO.getUpdatedTime());
                     update(existingData);
+                    log.info("Updated CaseDocument of type 'QaCheckOutput' with the latest version. CaseDataId: {}", existingData.getId().getId());
                 }
             } else {
                 save(caseDocumentDO);
             }
         } catch (Exception e) {
-            log.error("Error saving or updating RuleRuntimeData: {}", e.getMessage(), e);
+            log.error("Error saving or updating RuleRuntimeData: with caseId : [{}] exception: [{}]", caseDocumentDO.getId().getId(), e.getMessage(), e);
             throw new RuntimeException("Save or update failed", e);
         }
     }
@@ -82,12 +83,14 @@ public class PostgresRepository {
                     existingData.setCreatedBy(caseDocumentDO.getCreatedBy());
                     existingData.setLastModifiedBy(caseDocumentDO.getLastModifiedBy());
                     update(existingData);
+                    log.info("Updated CaseDocument of type [{}] with the latest createdDate. CaseDataId: {}", caseDocumentDO.getId().getType(), existingData.getId().getId());
+
                 }
             } else {
                 save(caseDocumentDO);
             }
         } catch (Exception e) {
-            log.error("Error saving or updating CaseDocumentDO: {}", e.getMessage(), e);
+            log.error("Error saving or updating CaseDocumentDO with caseId : [{}] exception : [{}]", caseDocumentDO.getId().getId(), e.getMessage(), e);
             throw new RuntimeException("Save or update failed", e);
         }
     }
@@ -110,13 +113,14 @@ public class PostgresRepository {
             String id = caseMerge.getOldCaseId();
             Case caseObj = findCaseById(id);
             if (caseObj == null) {
-                log.error("Case not found for merging. Old Case ID: [{}], Merge Case ID: [{}]", caseMerge.getOldCaseId(), caseMerge.getMergeCaseId());
+                log.info("Case not found for merging. Old Case ID: [{}], Merge Case ID: [{}]", caseMerge.getOldCaseId(), caseMerge.getMergeCaseId());
                 return;
             }
             if (caseObj.getMergedCaseIds() != null) {
                 List<String> mergeCaseIdList = caseObj.getMergedCaseIds();
                 mergeCaseIdList.add(caseMerge.getMergeCaseId());
                 update(caseObj);
+                log.info("Added [{}] in the mergeCaseIdList of case id : [{}]", caseMerge.getMergeCaseId(), id);
             } else {
                 List<String> mergeCaseIdList = new ArrayList<>();
                 mergeCaseIdList.add(caseMerge.getMergeCaseId());

@@ -17,7 +17,7 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Slf4j
 @Builder
-@Component("ruleRunTimeDataa")
+@Component("ruleRunTime_Data")
 public class RuleRuntimeData {
     private static final long serialVersionUID = 1L;
 
@@ -79,7 +79,7 @@ public class RuleRuntimeData {
                 return ruleRuntimeData;
             }
         } catch (Exception e) {
-            log.error("Error converting MongoDB document: {}", e.getMessage(), e);
+            log.error("Error converting RuleRuntimeData document: [{}] exception : [{}]", mongoDocument, e.getMessage(), e);
             throw new RuntimeException("Conversion failed", e);
         }
         return null;

@@ -5,6 +5,8 @@ import ai.sapper.migration.DataMigration.common.mongo.BaseEntity;
 import ai.sapper.migration.DataMigration.constants.ConfigLevel;
 import ai.sapper.migration.DataMigration.constants.ConfigType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -20,7 +22,8 @@ import static ai.sapper.migration.DataMigration.constants.Collections.*;
 @Document("config")
 @Component
 @ToString(callSuper = true)
-@Data
+@Getter
+@Setter
 public class Config extends BaseEntity {
     private static final long serialVersionUID = 1L;
     @Id

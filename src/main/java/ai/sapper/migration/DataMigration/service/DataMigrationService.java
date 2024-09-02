@@ -29,17 +29,11 @@ public class DataMigrationService {
     @Value("${postgres.class.path}")
     private String postgresModelClassPath;
 
-    @Value("${isSkip}")
-    private boolean isSkip;
-
     @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
     private DataMigrationRepository dataMigrationRepository;
-
-    @Autowired
-    private PostgresRepository postgresRepository;
 
     @Autowired
     private DocumentService documentService;
