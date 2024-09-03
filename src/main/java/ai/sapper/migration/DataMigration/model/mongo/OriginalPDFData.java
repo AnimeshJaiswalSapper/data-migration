@@ -90,12 +90,6 @@ public class OriginalPDFData implements Serializable {
     @Autowired
     ReadService readService;
 
-    public List<OriginalPDFData> read(Date lastProcessedDate, String lastProcessedId) {
-        return readService.findDocumentsSortedIds(OriginalPDFData.class,
-                "OriginalPDFData"
-        );
-    }
-
     public List<OriginalPDFData> readByCaseId(String caseId) {
         return readService.findDocuments(OriginalPDFData.class,
                 "OriginalPDFData",

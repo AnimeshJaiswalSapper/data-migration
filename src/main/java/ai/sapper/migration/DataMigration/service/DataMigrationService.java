@@ -1,9 +1,8 @@
 package ai.sapper.migration.DataMigration.service;
 
 import ai.sapper.migration.DataMigration.Repository.mongo.DataMigrationRepository;
-import ai.sapper.migration.DataMigration.Repository.postgres.PostgresRepository;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 import ai.sapper.migration.DataMigration.model.mongo.DataMigration;
-import ai.sapper.migration.DataMigration.model.postgres.CaseDocumentDO;
 import ai.sapper.migration.DataMigration.s3migration.service.S3migrationService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -21,7 +19,7 @@ import java.util.*;
 @Slf4j
 public class DataMigrationService {
 
-    private static final List<String> MODELS = List.of("AuditEntity", "AuditSnapshot", "AuditSnapshotOriginal", "Case", "CaseMerge", "CaseDocumentDO", "COA", "COALabel", "Config", "Entity", "SapperRule", "Status", "RuleRuntimeData");
+    private static final List<String> MODELS = List.of(AUDIT_ENTITY, AUDIT_SNAPSHOT, AUDIT_SNAPSHOT_ORIGINAL, CASE, CASE_MERGE, CASE_DOCUMENT_DO, COA, COA_LABEL, CONFIG, ENTITY, SAPPER_RULE, STATUS, RULE_RUNTIME_DATA);
 
     @Value("${mongo.class.path}")
     private String mongoModelClassPath;
@@ -41,19 +39,22 @@ public class DataMigrationService {
     @Autowired
     private S3migrationService s3migrationService;
 
-    @Value("${db.migration:false}")
+    @Value("${db.migration}")
     private Boolean dbMigration;
 
-    @Value("${s3.migration:true}")
+    @Value("${s3.migration}")
     private Boolean s3migration;
 
     @PostConstruct
     public void start() {
-        log.info("---------STARTED DATA MIGRATION------");
-        if (dbMigration)
+        if (dbMigration) {
+            log.info("---------STARTED DB MIGRATION------");
             MODELS.forEach(this::processModel);
-        if (s3migration)
+        }
+        if (s3migration) {
+            log.info("---------STARTED S3 MIGRATION------");
             s3migrationService.s3migration();
+        }
     }
 
     private void processModel(String collection) {
@@ -144,8 +145,8 @@ public class DataMigrationService {
     private Optional<Field> findDateField(Object obj, String collection) {
         Class<?> clazz = obj.getClass();
 
-        if (collection.equals("Config") || collection.equals("Entity")) {
-            Field field = findFieldInHierarchy(clazz, "lastModifiedDate");
+        if (collection.equals(CONFIG) || collection.equals(ENTITY)) {
+            Field field = findFieldInHierarchy(clazz, LAST_MODIFIED_DATE);
             if (field != null) {
                 field.setAccessible(true);
                 return Optional.of(field);
@@ -155,9 +156,9 @@ public class DataMigrationService {
             }
         }
 
-        Field field = findFieldInHierarchy(clazz, "createdDate");
+        Field field = findFieldInHierarchy(clazz, CREATED_DATE);
         if (field == null) {
-            field = findFieldInHierarchy(clazz, "createdAt");
+            field = findFieldInHierarchy(clazz, CREATED_AT);
         }
 
         if (field != null) {

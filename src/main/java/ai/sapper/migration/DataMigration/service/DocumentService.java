@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static ai.sapper.migration.DataMigration.constants.Collections.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -29,16 +30,16 @@ public class DocumentService {
             try {
                 Object postgresEntity = convertMethod.invoke(postgresModelObj, document);
                 if (postgresEntity != null) {
-                    if ("RuleRuntimeData".equals(collection)) {
+                    if (RULE_RUNTIME_DATA.equals(collection)) {
                         CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
                         postgresRepository.saveOrUpdateRuleRuntimeData(caseDocumentDO);
-                    } else if ("CaseDocumentDO".equals(collection)) {
+                    } else if (CASE_DOCUMENT_DO.equals(collection)) {
                         CaseDocumentDO caseDocumentDO = (CaseDocumentDO) postgresEntity;
                         postgresRepository.saveOrUpdateCaseDocumentDO(caseDocumentDO);
-                    } else if ("CaseMerge".equals(collection)) {
+                    } else if (CASE_MERGE.equals(collection)) {
                         CaseMerge caseMerge = (CaseMerge) postgresEntity;
                         postgresRepository.saveOrUpdateCaseMerge(caseMerge);
-                    } else if (!"Entity".equals(collection)) {
+                    } else if (!ENTITY.equals(collection)) {
                         postgresRepository.save(postgresEntity);
                     }
                 }
